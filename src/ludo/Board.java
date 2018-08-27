@@ -16,7 +16,7 @@ public class Board {
 	
 	public Board() {
 		regular = new Square[13 * playersNumber];
-		Arrays.fill(regular, new Square());
+		Arrays.fill(regular, new EmptySquare());
 		
 		homes = new EnumMap<Player, Square[]>(Player.class);		
 		starting = new EnumMap<Player, Integer>(Player.class);
@@ -31,7 +31,7 @@ public class Board {
 	
 	private Square[] createEmptySquares(Integer length) {
 		Square[] result = new Square[length];
-		Arrays.fill(result, new Square());
+		Arrays.fill(result, new EmptySquare());
 		return result;
 	}
 	
@@ -71,12 +71,42 @@ public class Board {
 	}
 
 
-	private String printArrays(Object[] arr) {
-		StringBuilder sb = new StringBuilder(256);
-		sb.append(arr[0]);
+	public int move(Player player, int tokenPosition, int steps) {
+		Token token = (Token) regular[tokenPosition];
+		regular[tokenPosition] = new EmptySquare();
+
+		int newPosition = (tokenPosition + steps) % regular.length ;
+		if(isGoingToHomeColumn(player, tokenPosition, steps)) {
+			Square[] playerHome = homes.get(player);
+			newPosition = newPosition - player.getStartingSquare();
+			playerHome[newPosition] = token;
+		} else {			
+			regular[newPosition] = token;
+		}
 		
-		for(int i = 1; i < arr.length; i++) sb.append('-').append(arr[i]);
+		return newPosition;
+	}
+
+	public boolean isGoingToHomeColumn(Player player, int tokenPosition, int steps) {
+		int normalizedPosition = (tokenPosition - player.getStartingSquare() + regular.length) % regular.length;
+		return (normalizedPosition + steps > regular.length);
+	}
+
+	public void moveInsideHomeColumn(Player player, int tokenPosition, int steps) throws MoveNotAllowedException {
+		if(tokenPosition + steps >= 6) {
+			throw new MoveNotAllowedException();
+		}
 		
-		return sb.toString();
+		Square[] playerHome = homes.get(player);
+
+		if(tokenPosition + steps == 5) {
+			Integer finishLine = finishing.get(player);
+			finishing.put(player, finishLine+1);
+		} else {			
+			Token token = (Token) playerHome[tokenPosition];
+			playerHome[tokenPosition + steps] = token;
+		}
+		
+		playerHome[tokenPosition] = new EmptySquare();
 	}
 }
