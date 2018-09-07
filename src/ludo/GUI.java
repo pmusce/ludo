@@ -31,7 +31,7 @@ public class GUI {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GameState localPlayer =  LocalPlayer.getInstance();
+				HumanPlayer localPlayer =  LocalPlayer.getInstance();
 				localPlayer.toggleReady();
 				Ludo.updateAll();
 				showConnectedUsers();

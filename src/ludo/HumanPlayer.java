@@ -3,7 +3,7 @@ package ludo;
 import java.rmi.RemoteException;
 import java.util.Map;
 
-public class GameState {
+public class HumanPlayer {
 	private String nickname;
 	private boolean isReady;
 	
@@ -28,7 +28,9 @@ public class GameState {
 			}
 		}
 	}
-	private boolean checkIfAllPlayersAreReady() {
+	public boolean checkIfAllPlayersAreReady() {
+		if(!isReady) return false;
+		
 		for(Map.Entry<String, LudoInterface> player : PlayersMap.getOthers().entrySet()) {
 			System.out.println(player.getKey());
 			try {

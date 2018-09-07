@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.Map;
 
 public class Ludo implements LudoInterface{	
+
 	public Ludo() {
 	}
 
@@ -17,6 +18,11 @@ public class Ludo implements LudoInterface{
 	
 	
 	public static void updateAll() {
+		boolean allPlayersReady = LocalPlayer.getInstance().checkIfAllPlayersAreReady();
+		if(allPlayersReady) {
+			FirstPlayerElection.begin();
+		}
+		
 		PlayersMap registries = PlayersMap.getInstance();
 		
 		for(Map.Entry<String, LudoInterface> entry : registries.entrySet()) {
@@ -26,6 +32,9 @@ public class Ludo implements LudoInterface{
 			
 			LudoInterface remoteRegistry = entry.getValue();
 			update(remoteRegistry);
+		}
+		if(allPlayersReady) {
+			FirstPlayerElection.startTurn();
 		}
 	}
 	
@@ -41,13 +50,24 @@ public class Ludo implements LudoInterface{
 	@Override
 	public void update(PlayersMap registries) throws RemoteException {
 		PlayersMap.updateAll(registries);
+		boolean allPlayersReady = LocalPlayer.getInstance().checkIfAllPlayersAreReady();
+		if(allPlayersReady) {
+			FirstPlayerElection.begin();
+			FirstPlayerElection.startTurn();
+		}
 		GUI.showConnectedUsers();
 	}
 
 	@Override
 	public boolean isReady() throws RemoteException {
-		GameState gameState = LocalPlayer.getInstance();
+		HumanPlayer gameState = LocalPlayer.getInstance();
 		return gameState.isReady();
 	}
+
+	@Override
+	public void comunicateStartingRoll(String player, int rollValue) throws RemoteException {
+		FirstPlayerElection.addRollForPlayer(player, rollValue);
+	}
+	
 
 }

@@ -16,7 +16,7 @@ public class EntryPoint {
 		String nickname = Integer.toString(port);
 		boolean isCreatingRoom = (args.length <= 1);
 		
-		GameState localPlayer = LocalPlayer.getInstance();
+		HumanPlayer localPlayer = LocalPlayer.getInstance();
 		localPlayer.setNickname(nickname);
 		
 		createRegistry(port);

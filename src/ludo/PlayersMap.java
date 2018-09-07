@@ -1,6 +1,7 @@
 package ludo;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class PlayersMap extends HashMap<String,LudoInterface>{
 	private static final long serialVersionUID = 1L;
@@ -27,6 +28,10 @@ public class PlayersMap extends HashMap<String,LudoInterface>{
 		otherPlayers = (PlayersMap) instance.clone();
 		otherPlayers.remove(LocalPlayer.getInstance().getNickname());
 		return otherPlayers;
+	}
+	
+	public static Set<String> getPlayers() {
+		return instance.keySet();
 	}
 
 }

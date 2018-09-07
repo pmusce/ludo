@@ -1,14 +1,14 @@
 package ludo;
 
 public class LocalPlayer {
-	private static GameState instance = null;
+	private static HumanPlayer instance = null;
 	
 	private LocalPlayer() {
 	}
 	
-	public static GameState getInstance() {
+	public static HumanPlayer getInstance() {
 		if(instance == null) {
-			instance = new GameState();
+			instance = new HumanPlayer();
 		}
 		
 		return instance;
