@@ -6,7 +6,6 @@ import java.util.Set;
 public class PlayersMap extends HashMap<String,LudoInterface>{
 	private static final long serialVersionUID = 1L;
 	private static PlayersMap instance = null;
-
 	
 	private PlayersMap() {
 	}

@@ -1,7 +1,14 @@
 package ludo;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
+import gui.GUI;
 
 public class Ludo implements LudoInterface{	
 
@@ -10,6 +17,7 @@ public class Ludo implements LudoInterface{
 
 	@Override
 	public void connect(String name, LudoInterface gameIstance) throws RemoteException {
+		assignColorToPlayer();
 		PlayersMap registries = PlayersMap.getInstance();
 		registries.put(name, gameIstance);
 		GUI.showConnectedUsers();
@@ -17,6 +25,11 @@ public class Ludo implements LudoInterface{
 	}
 	
 	
+	private void assignColorToPlayer() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public static void updateAll() {
 		boolean allPlayersReady = LocalPlayer.getInstance().checkIfAllPlayersAreReady();
 		if(allPlayersReady) {
@@ -37,7 +50,7 @@ public class Ludo implements LudoInterface{
 			FirstPlayerElection.startTurn();
 		}
 	}
-	
+
 	public static void update(LudoInterface remoteRegistry) {
 		try {
 			remoteRegistry.update(PlayersMap.getInstance());
@@ -68,6 +81,8 @@ public class Ludo implements LudoInterface{
 	public void comunicateStartingRoll(String player, int rollValue) throws RemoteException {
 		FirstPlayerElection.addRollForPlayer(player, rollValue);
 	}
+	
+	
 	
 
 }

@@ -1,14 +1,18 @@
 package ludo;
 
+import java.awt.Color;
+
 public enum Player {
-	RED (0),
-	GREEN (1),
-	YELLOW (2),
-	BLUE (3);
+	RED (0, Color.RED),
+	GREEN (1, Color.GREEN),
+	YELLOW (2, Color.YELLOW),
+	BLUE (3, Color.BLUE);
 	
 	private int index;
-	Player(int index) {
+	private Color color;
+	Player(int index, Color color) {
 		this.index = index;
+		this.color = color;
 	}
 
 	public int getIndex() {
@@ -19,5 +23,7 @@ public enum Player {
 		return index * 13;
 	}
 	
-	
+	public Color getColor() {
+		return color;
+	}
 }

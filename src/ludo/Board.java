@@ -74,7 +74,8 @@ public class Board {
 	public int move(Player player, int tokenPosition, int steps) {
 		Token token = (Token) regular[tokenPosition];
 		regular[tokenPosition] = new EmptySquare();
-
+		
+		
 		int newPosition = (tokenPosition + steps) % regular.length ;
 		if(isGoingToHomeColumn(player, tokenPosition, steps)) {
 			Square[] playerHome = homes.get(player);
@@ -109,4 +110,42 @@ public class Board {
 		
 		playerHome[tokenPosition] = new EmptySquare();
 	}
+
+	public boolean hasPlayerActiveTokens(Player p) {
+		return starting.get(p) + finishing.get(p) < 4;
+	}
+
+	public boolean hasPlayerAvailableMoves(Player p, int steps) {
+		for(Square s : regular) {
+			if(s.isTokenOfPlayer(p)) return true;
+		}
+		Square[] playerHome = homes.get(p);
+		for(int i = 0; i < playerHome.length; i++) {
+			if(playerHome[i].isTokenOfPlayer(p)) {
+				if(i + steps < 6) return true;
+			}	
+		}
+		return false;
+	}
+
+	public boolean hasPlayerUnusedToken(Player p) {
+		return starting.get(p) > 0;
+	}
+
+	public Square[] getRegular() {
+		return regular;
+	}
+
+	public EnumMap<Player, Square[]> getHomes() {
+		return homes;
+	}
+
+	public EnumMap<Player, Integer> getStarting() {
+		return starting;
+	}
+
+	public EnumMap<Player, Integer> getFinishing() {
+		return finishing;
+	}
+	
 }

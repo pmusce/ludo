@@ -171,4 +171,37 @@ public class BoardTest {
 		String actual = board.toString();
 		assertEquals(expected, actual);
 	}
+	
+	@Test
+	public void testRedPlayerHasTokensInGame() {
+		board.putIn(Player.RED);
+		
+		assertTrue(board.hasPlayerActiveTokens(Player.RED));
+		assertFalse(board.hasPlayerActiveTokens(Player.YELLOW));
+	}
+	
+	@Test 
+	public void testPlayerHasAvailableMoves() {
+		Player p = Player.YELLOW;
+		board.putIn(p);
+		int position = p.getStartingSquare();
+		position = board.move(p, position, 50);	
+		position = board.move(p, position, 4);
+		
+		assertTrue(board.hasPlayerAvailableMoves(p, 3));
+		assertFalse(board.hasPlayerAvailableMoves(p, 5));
+		
+		board.putIn(p);
+		assertTrue(board.hasPlayerAvailableMoves(p, 5));
+	}
+	
+	@Test 
+	public void testPlayerHasAvailableMovesWithTokenInRegularSquare() {
+		Player p = Player.YELLOW;
+		board.putIn(p);
+		int position = p.getStartingSquare();
+		position = board.move(p, position, 50);	
+		
+		assertTrue(board.hasPlayerAvailableMoves(p, 5));
+	}
 }
