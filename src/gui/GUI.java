@@ -1,9 +1,11 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,10 +17,13 @@ import ludo.GameEngine;
 import ludo.HumanPlayer;
 import ludo.LocalPlayer;
 import ludo.Ludo;
-import ludo.LudoInterface;
-import ludo.PlayersMap;
+import ludo.Player;
+import ludo.GameRoom;
 
 public class GUI {
+	private static JFrame waitingRoomFrame;
+	private static GUIBoard gBoard;
+	private static ActionsPanel actionsPanel;
 	
 	public static void start() {
     	//Schedule a job for the event-dispatching thread:
@@ -32,11 +37,11 @@ public class GUI {
 
 	protected static void createAndShowGUI() {
 		//Create and set up the window.
-        JFrame actionsFrame = new JFrame("Ludo");
-        actionsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        waitingRoomFrame = new JFrame("Ludo - " + LocalPlayer.getColor().toString());
+        waitingRoomFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         showConnectedUsers();
-                
+        
         JButton buttonReady = new JButton("Ready");
         buttonReady.addActionListener(new ActionListener() {
 			
@@ -76,39 +81,60 @@ public class GUI {
         buttonBar.add(buttonRoll);
         buttonBar.add(moveInput);
         buttonBar.add(buttonMove);
-		actionsFrame.getContentPane().add(buttonBar);
+		waitingRoomFrame.getContentPane().add(buttonBar);
         
         //Display the window.
-        actionsFrame.pack();
-        actionsFrame.setVisible(true);
+        waitingRoomFrame.pack();
+        waitingRoomFrame.setVisible(true);
 	}
 
-	public static void showConnectedUsers() {
-		
-		PlayersMap players = PlayersMap.getInstance();
-		
-		for(String nickname : players.keySet()) {
+	public static void showConnectedUsers() {		
+		for(Entry<Player, HumanPlayer> player :  GameRoom.getInstance().entrySet()) {
+			String output;
 			try {
-				LudoInterface playerState = (LudoInterface) players.get(nickname);
-				String output = playerState.isReady() ? "" : "not ";
-				System.out.println(nickname + ": " + output + "ready");
+				Player color = player.getKey();
+				output = player.getValue().getConnection().isReady() ? "" : "not ";
+				System.out.println(color.toString() + " " + player.getValue().getNickname() + ": " + output + "ready");
 			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
 		
 		System.out.println("----");
 	}
 
 	public static GUIBoard createBoardFrame(Board board) {
-		GUIBoard gBoard = new GUIBoard(board);
-		JFrame boardFrame = new JFrame("Ludo Board");
+		gBoard = new GUIBoard(board);
+		actionsPanel = new ActionsPanel();
+ 		JFrame boardFrame = new JFrame("Ludo Board - " + LocalPlayer.getColor().toString());
         boardFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        boardFrame.setSize(500,500);
-        boardFrame.add(gBoard);
+        boardFrame.add(gBoard, BorderLayout.CENTER);
+        boardFrame.add(actionsPanel, BorderLayout.SOUTH);
+        boardFrame.pack();
         boardFrame.setVisible(true);
         return gBoard;
 	}
+	
+	public static void showText(String str) {
+		actionsPanel.showText(str);
+	}
+	
+	public static void showMoveAndPutToken(boolean enableMove, boolean enablePutToken) {
+		actionsPanel.showMoveAndPutToken(enableMove, enablePutToken);
+	}
 
+	public static void showWaiting() {
+		actionsPanel.showWaiting();
+	}
+
+	public static void showRoll() {
+		actionsPanel.showRoll();
+	}
+
+	public static void showPass() {
+		actionsPanel.showPass();
+	}
     
 }

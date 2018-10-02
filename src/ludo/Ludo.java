@@ -1,12 +1,7 @@
 package ludo;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.EnumMap;
 
 import gui.GUI;
 
@@ -16,34 +11,27 @@ public class Ludo implements LudoInterface{
 	}
 
 	@Override
-	public void connect(String name, LudoInterface gameIstance) throws RemoteException {
-		assignColorToPlayer();
-		PlayersMap registries = PlayersMap.getInstance();
-		registries.put(name, gameIstance);
+	public void connect(HumanPlayer player) throws RemoteException {
+		GameRoom.addPlayer(player);
 		GUI.showConnectedUsers();
 		updateAll();
 	}
 	
-	
-	private void assignColorToPlayer() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public static void updateAll() {
 		boolean allPlayersReady = LocalPlayer.getInstance().checkIfAllPlayersAreReady();
 		if(allPlayersReady) {
-			FirstPlayerElection.begin();
+			GameEngine.prepareGame();
 		}
 		
-		PlayersMap registries = PlayersMap.getInstance();
-		
-		for(Map.Entry<String, LudoInterface> entry : registries.entrySet()) {
-			if(entry.getKey().equals(LocalPlayer.getInstance().getNickname())) {
+		EnumMap<Player, HumanPlayer> registries = GameRoom.getInstance();
+		HumanPlayer localPlayer = LocalPlayer.getInstance();
+		for(HumanPlayer player : registries.values()) {
+			if(player.equals(localPlayer)) {
 				continue;
 			}
 			
-			LudoInterface remoteRegistry = entry.getValue();
+			LudoInterface remoteRegistry = player.getConnection();
 			update(remoteRegistry);
 		}
 		if(allPlayersReady) {
@@ -53,7 +41,7 @@ public class Ludo implements LudoInterface{
 
 	public static void update(LudoInterface remoteRegistry) {
 		try {
-			remoteRegistry.update(PlayersMap.getInstance());
+			remoteRegistry.update(GameRoom.getInstance());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,11 +49,11 @@ public class Ludo implements LudoInterface{
 	}
 
 	@Override
-	public void update(PlayersMap registries) throws RemoteException {
-		PlayersMap.updateAll(registries);
+	public void update(EnumMap<Player, HumanPlayer> registries) throws RemoteException {
+		GameRoom.updateAll(registries);
 		boolean allPlayersReady = LocalPlayer.getInstance().checkIfAllPlayersAreReady();
 		if(allPlayersReady) {
-			FirstPlayerElection.begin();
+			GameEngine.prepareGame();
 			FirstPlayerElection.startTurn();
 		}
 		GUI.showConnectedUsers();
@@ -78,9 +66,16 @@ public class Ludo implements LudoInterface{
 	}
 
 	@Override
-	public void comunicateStartingRoll(String player, int rollValue) throws RemoteException {
+	public void comunicateStartingRoll(Player player, int rollValue) throws RemoteException {
 		FirstPlayerElection.addRollForPlayer(player, rollValue);
 	}
+
+	@Override
+	public void giveTurn() throws RemoteException {
+		GameEngine.play();
+		
+	}
+
 	
 	
 	

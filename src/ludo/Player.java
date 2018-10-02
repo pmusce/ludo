@@ -26,4 +26,18 @@ public enum Player {
 	public Color getColor() {
 		return color;
 	}
+	
+	public Player next() {
+		switch (this) {
+		case RED:
+			return GREEN;
+		case GREEN:
+			return YELLOW;
+		case YELLOW:
+			return BLUE;
+		case BLUE:
+			return RED;
+		}
+		return null;
+	}
 }

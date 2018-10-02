@@ -2,10 +2,12 @@ package ludo;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.EnumMap;
 
 public interface LudoInterface extends Remote{
-	void connect(String nickname, LudoInterface gameIstance) throws RemoteException;
+	void connect(HumanPlayer localPlayer) throws RemoteException;
 	boolean isReady() throws RemoteException;
-	void update(PlayersMap registries) throws RemoteException;
-	void comunicateStartingRoll(String currentPlayer, int currentRoll) throws RemoteException;
+	void update(EnumMap<Player, HumanPlayer> registries) throws RemoteException;
+	void comunicateStartingRoll(Player player, int rollValue) throws RemoteException;
+	void giveTurn() throws RemoteException;
 }

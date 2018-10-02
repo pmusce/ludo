@@ -1,7 +1,9 @@
 package ludo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 
 public class Board {
 	private int playersNumber = Player.values().length;
@@ -148,4 +150,22 @@ public class Board {
 		return finishing;
 	}
 	
+	public List<Integer> getMovableTokens(Player p, int steps) {
+		List<Integer> result = new ArrayList<Integer>();
+		for(int i=0; i<regular.length; i++) {
+			Square s = regular[i];
+			if(s.isTokenOfPlayer(p)) {
+				result.add(i);
+			}
+		}
+		Square[] playerHome = homes.get(p);
+		for(int i = 0; i < playerHome.length; i++) {
+			if(playerHome[i].isTokenOfPlayer(p)) {
+				if(i + steps < 6) 
+					result.add(i + 13 * playersNumber);
+			}	
+		}
+		
+		return result;
+	}
 }

@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -9,11 +11,14 @@ import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
 import ludo.Board;
 import ludo.GameEngine;
+import ludo.GameRoom;
+import ludo.HumanPlayer;
 import ludo.Player;
 import ludo.Square;
 
@@ -21,6 +26,7 @@ import ludo.Square;
 public class GUIBoard extends JPanel {
 	private Board board;
 	private int squareSize = 30;
+	private int offset = 15;
 	private Point[] regularCoords;
 	private Shape[] regularSquares;
 	private Point[] redHomeCoords;
@@ -35,6 +41,7 @@ public class GUIBoard extends JPanel {
 	
 	public GUIBoard(Board b){
 		super();
+		this.setPreferredSize(new Dimension(500, 500));
 		board = b;
 		init();
 		addMouseListener(new MouseAdapter() {
@@ -85,6 +92,40 @@ public class GUIBoard extends JPanel {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D)g;
 		paintBoard(g2);
+		paintNicknames(g2);
+	}
+	
+	public void paintNicknames(Graphics2D g2) {
+		FontMetrics fm = g2.getFontMetrics();
+		for(Entry<Player, HumanPlayer> player : GameRoom.getInstance().entrySet()) {
+			String nickname = player.getValue().getNickname();
+			Player color = player.getKey();
+			int x = 0, y = 0;
+			
+			g2.setColor(color.getColor());
+			
+			switch (color) {
+			case RED:
+				y = 9;
+				break;
+			case GREEN:
+				x = 0;
+				y = 0;
+				break;
+			case YELLOW:
+				x = 10;
+				y = 0;
+				break;
+			case BLUE:
+				x = 10;
+				y = 9;
+				break;
+			}
+			g2.drawString(nickname, x * squareSize + offset, y * squareSize + fm.getHeight() + offset);
+			if(color.equals(GameEngine.getActivePlayer())) {
+				g2.drawString("(playing)", x * squareSize + offset, (y + 1) * squareSize + fm.getHeight() + offset);
+			}
+		}
 	}
 	
 	private void init() {
@@ -126,7 +167,7 @@ public class GUIBoard extends JPanel {
 		regularSquares = new Shape[52];
 		for(int i=0; i<regularCoords.length; i++) {
 			Point p = regularCoords[i];
-			regularSquares[i] = new Rectangle(squareSize * p.x, squareSize * p.y, squareSize, squareSize);
+			regularSquares[i] = createSquare(p);
 		}
 		
 		redHomeSquares = new Shape[5];
@@ -135,20 +176,29 @@ public class GUIBoard extends JPanel {
 		blueHomeSquares = new Shape[5];
 		for(int i=0; i<redHomeCoords.length; i++) {
 			Point p = redHomeCoords[i];
-			redHomeSquares[i] = new Rectangle(squareSize * p.x, squareSize * p.y, squareSize, squareSize);
+			redHomeSquares[i] = createSquare(p);
 			
 			p = greenHomeCoords[i];
-			greenHomeSquares[i] = new Rectangle(squareSize * p.x, squareSize * p.y, squareSize, squareSize);
+			greenHomeSquares[i] = createSquare(p);
 			
 			p = yellowHomeCoords[i];
-			yellowHomeSquares[i] = new Rectangle(squareSize * p.x, squareSize * p.y, squareSize, squareSize);
+			yellowHomeSquares[i] = createSquare(p);
 			
 			p = blueHomeCoords[i];
-			blueHomeSquares[i] = new Rectangle(squareSize * p.x, squareSize * p.y, squareSize, squareSize);
+			blueHomeSquares[i] = createSquare(p);
 		}
 	}
 	
 	
+	private Shape createSquare(Point p) {
+		return new Rectangle(
+				squareSize * p.x + offset, 
+				squareSize * p.y + offset, 
+				squareSize, 
+				squareSize
+			);
+	}
+
 	public void update() {
 		repaint();
 	}
@@ -184,8 +234,9 @@ public class GUIBoard extends JPanel {
 	
 	public void paintToken(Graphics2D g2, Point p, Square s) {
 		g2.setColor(s.getColor());
-		g2.fill(new Ellipse2D.Double(squareSize * p.x, squareSize * p.y, squareSize, squareSize)); 
+		Shape circle = new Ellipse2D.Double(squareSize * p.x + offset, squareSize * p.y + offset, squareSize, squareSize);
+		g2.fill(circle); 
 		g2.setColor(Color.BLACK);
-		g2.draw(new Ellipse2D.Double(squareSize * p.x, squareSize * p.y, squareSize, squareSize));
+		g2.draw(circle);
 	}
 }

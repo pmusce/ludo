@@ -34,7 +34,9 @@ public class EntryPoint {
 		try {
 			Registry remoteRegistry = LocateRegistry.getRegistry(remotePort);
 			LudoInterface remoteClient = (LudoInterface) remoteRegistry.lookup("ludo");
-			remoteClient.connect(nickname, gameIstance);
+			HumanPlayer localPlayer = LocalPlayer.getInstance();
+			localPlayer.setConnection(gameIstance);
+			remoteClient.connect(localPlayer);
 		} catch(RemoteException | NotBoundException e) {
 			e.printStackTrace();
 		}
@@ -42,10 +44,11 @@ public class EntryPoint {
 
 	private static void createRegistry(int port) {
 		gameIstance = new Ludo();
-		PlayersMap registryList = PlayersMap.getInstance();
 		try {
 			localRegistry = LocateRegistry.createRegistry(port);
-			registryList.put(Integer.toString(port), gameIstance);
+			HumanPlayer p = LocalPlayer.getInstance();
+			p.setConnection(gameIstance);
+			GameRoom.addPlayer(p);
 			
 			LudoInterface stub = (LudoInterface) UnicastRemoteObject.exportObject(gameIstance, 0);
 			localRegistry.rebind("ludo", stub);

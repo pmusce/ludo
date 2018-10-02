@@ -5,18 +5,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import gui.GUI;
+
 public class FirstPlayerElection {
-	private static Map <String, Integer> playersRoll;
+	private static Map <Player, Integer> playersRoll;
 	private static boolean eligible;
-	private static Set<String> eligiblePlayers;
+	private static Set<Player> eligiblePlayers;
 	private static int turn;
 	
 	public static void begin() {
 		System.out.println("Starting election for first player");
 		eligible = true;
 		turn = 0;
-		eligiblePlayers = PlayersMap.getPlayers();
-		playersRoll = new HashMap<String, Integer>();
+		eligiblePlayers = GameRoom.getInstance().keySet();
+		playersRoll = new HashMap<Player, Integer>();
 	}
 
 	public static void startTurn() {
@@ -26,17 +28,18 @@ public class FirstPlayerElection {
 		
 		int currentRoll = Dice.roll();
 		System.out.println(currentRoll);
+		GUI.showText("Election Roll:" + currentRoll);
 		comunicateStartingRoll(currentRoll);
-		String currentPlayer = LocalPlayer.getInstance().getNickname();
+		Player currentPlayer = LocalPlayer.getColor();
 		addRollForPlayer(currentPlayer, currentRoll);
 	}
 	
 	private static void comunicateStartingRoll(int currentRoll) {
-		String currentPlayer = LocalPlayer.getInstance().getNickname();
+		Player currentPlayer = LocalPlayer.getColor();
 		
-		for(LudoInterface player : PlayersMap.getOthers().values()) {
+		for(HumanPlayer player : GameRoom.getOthers().values()) {
 			try {
-				player.comunicateStartingRoll(currentPlayer, currentRoll);
+				player.getConnection().comunicateStartingRoll(currentPlayer, currentRoll);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -44,12 +47,12 @@ public class FirstPlayerElection {
 		}
 	}
 
-	public static void addRollForPlayer(String p, int rollValue) {
+	public static void addRollForPlayer(Player p, int rollValue) {
 		playersRoll.put(p,rollValue);
 		if(hasEveryoneFineshedRolling()) {
 			Integer maxRoll = 0;
-			String winningPlayer = null;
-			for(Map.Entry<String, Integer> entry : playersRoll.entrySet()) {
+			Player winningPlayer = null;
+			for(Map.Entry<Player, Integer> entry : playersRoll.entrySet()) {
 				if(entry.getValue() > maxRoll) {
 					maxRoll = entry.getValue();
 					winningPlayer = entry.getKey();
