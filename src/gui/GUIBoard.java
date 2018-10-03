@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -11,6 +12,7 @@ import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.util.EnumMap;
 import java.util.Map.Entry;
 
 import javax.swing.JPanel;
@@ -27,61 +29,43 @@ public class GUIBoard extends JPanel {
 	private Board board;
 	private int squareSize = 30;
 	private int offset = 15;
+	private boolean isMoving;
 	private Point[] regularCoords;
 	private Shape[] regularSquares;
-	private Point[] redHomeCoords;
-	private Shape[] redHomeSquares;
-	private Point[] greenHomeCoords;
-	private Shape[] greenHomeSquares;
-	private Point[] yellowHomeCoords;
-	private Shape[] yellowHomeSquares;
-	private Point[] blueHomeCoords;
-	private Shape[] blueHomeSquares;
+	private EnumMap<Player, Point[]> homeCoords;
+	private EnumMap<Player, Shape[]> homeSquares;
 		
 	
 	public GUIBoard(Board b){
 		super();
 		this.setPreferredSize(new Dimension(500, 500));
+		isMoving = false;
 		board = b;
 		init();
 		addMouseListener(new MouseAdapter() {
 			@Override
             public void mouseClicked(MouseEvent me) {
                 super.mouseClicked(me);
+                
+                if(!isMoving) return;
+                
                 for (int i=0; i<regularSquares.length; i++) {
                 	Shape s = regularSquares[i];
                     if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
                     	//we can either just print out the object class name
                         System.out.println("Clicked " + i);
                         GameEngine.moveToken(i);
+                        isMoving = false;
                     }
                 }
-                for (int i=0; i<redHomeSquares.length; i++) {
-                	Shape s = redHomeSquares[i];
-                    if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
-                        System.out.println("Clicked red home " + i);
-                        GameEngine.moveInsideHomeColumn(i);
-                    }
-                }
-                for (int i=0; i<greenHomeSquares.length; i++) {
-                	Shape s = greenHomeSquares[i];
-                    if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
-                        System.out.println("Clicked green home " + i);
-                        GameEngine.moveInsideHomeColumn(i);
-                    }
-                }
-                for (int i=0; i<yellowHomeSquares.length; i++) {
-                	Shape s = yellowHomeSquares[i];
-                    if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
-                        System.out.println("Clicked yellow home " + i);
-                        GameEngine.moveInsideHomeColumn(i);
-                    }
-                }
-                for (int i=0; i<blueHomeSquares.length; i++) {
-                	Shape s = blueHomeSquares[i];
-                    if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
-                        System.out.println("Clicked blue home " + i);
-                        GameEngine.moveInsideHomeColumn(i);
+                for(Player player : Player.values()) {
+                	for (int i=0; i<5; i++) {
+                    	Shape s = homeSquares.get(player)[i];
+                        if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
+                            System.out.println("Clicked "+ player.toString() + " home " + i);
+                            GameEngine.moveInsideHomeColumn(i);
+                            isMoving = false;
+                        }
                     }
                 }
             }
@@ -147,15 +131,16 @@ public class GUIBoard extends JPanel {
 		regularCoords[38] = new Point(7, 14);
 		regularCoords[51] = new Point(0, 7);
 		
-		redHomeCoords = new Point[5];
-		greenHomeCoords = new Point[5];
-		yellowHomeCoords = new Point[5];
-		blueHomeCoords = new Point[5];
+		homeCoords = new EnumMap<Player,Point[]>(Player.class);
+		homeCoords.put(Player.RED, new Point[5]);
+		homeCoords.put(Player.GREEN, new Point[5]);
+		homeCoords.put(Player.YELLOW, new Point[5]);
+		homeCoords.put(Player.BLUE, new Point[5]);
 		for(int i=0; i<5; i++) {
-			redHomeCoords[i] = new Point(1+i, 7);
-			greenHomeCoords[i] = new Point(7, 1+i);
-			yellowHomeCoords[i] = new Point(13-i, 7);
-			blueHomeCoords[i] = new Point(7, 13-i);
+			homeCoords.get(Player.RED)[i] = new Point(1+i, 7);
+			homeCoords.get(Player.GREEN)[i] = new Point(7, 1+i);
+			homeCoords.get(Player.YELLOW)[i] = new Point(13-i, 7);
+			homeCoords.get(Player.BLUE)[i] = new Point(7, 13-i);
 		}
 		
 		createShapes();
@@ -170,23 +155,15 @@ public class GUIBoard extends JPanel {
 			regularSquares[i] = createSquare(p);
 		}
 		
-		redHomeSquares = new Shape[5];
-		greenHomeSquares = new Shape[5];
-		yellowHomeSquares = new Shape[5];
-		blueHomeSquares = new Shape[5];
-		for(int i=0; i<redHomeCoords.length; i++) {
-			Point p = redHomeCoords[i];
-			redHomeSquares[i] = createSquare(p);
-			
-			p = greenHomeCoords[i];
-			greenHomeSquares[i] = createSquare(p);
-			
-			p = yellowHomeCoords[i];
-			yellowHomeSquares[i] = createSquare(p);
-			
-			p = blueHomeCoords[i];
-			blueHomeSquares[i] = createSquare(p);
+		homeSquares = new EnumMap<Player,Shape[]>(Player.class);
+		for(Player player : Player.values()) {
+			homeSquares.put(player, new Shape[5]);
+			for(int i=0; i<5; i++) {
+				Point p = homeCoords.get(player)[i];
+				homeSquares.get(player)[i] = createSquare(p);
+			}
 		}
+		
 	}
 	
 	
@@ -209,10 +186,9 @@ public class GUIBoard extends JPanel {
 			paintSquare(g2, regularSquares[i], regulars[i], regularCoords[i], Color.WHITE);
 		}
 		
-		paintHomeColumn(g2, Player.RED, redHomeSquares, redHomeCoords);
-		paintHomeColumn(g2, Player.GREEN, greenHomeSquares, greenHomeCoords);
-		paintHomeColumn(g2, Player.YELLOW, yellowHomeSquares, yellowHomeCoords);
-		paintHomeColumn(g2, Player.BLUE, blueHomeSquares, blueHomeCoords);
+		for(Player player : Player.values()) {
+			paintHomeColumn(g2, player, homeSquares.get(player), homeCoords.get(player));
+		}
 	}
 
 	private void paintHomeColumn(Graphics2D g2, Player player, Shape[] squares, Point[] coords) {
@@ -237,6 +213,17 @@ public class GUIBoard extends JPanel {
 		Shape circle = new Ellipse2D.Double(squareSize * p.x + offset, squareSize * p.y + offset, squareSize, squareSize);
 		g2.fill(circle); 
 		g2.setColor(Color.BLACK);
+		if(isMoving) {
+			g2.setStroke(new BasicStroke(3));
+			g2.draw(circle);
+			g2.setStroke(new BasicStroke());
+			g2.setColor(Color.WHITE);	
+		}
 		g2.draw(circle);
+	}
+	
+	public void setMoving(boolean b) {
+		isMoving = b;
+		this.repaint();
 	}
 }

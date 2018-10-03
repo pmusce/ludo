@@ -99,7 +99,7 @@ public class ActionsPanel extends JPanel implements ActionListener {
 			GameEngine.rollDice();
 			break;
 		case "move":
-			
+			GUI.enableMovingToken();
 			break;
 		case "play":
 			GameEngine.playToken();

@@ -136,5 +136,10 @@ public class GUI {
 	public static void showPass() {
 		actionsPanel.showPass();
 	}
+
+	public static void enableMovingToken() {
+		gBoard.setMoving(true);
+		
+	}
     
 }

@@ -26,10 +26,12 @@ public class GameEngine {
 			play();
 		} else {
 			System.out.println("Wait your turn");
+			GUI.showWaiting();
 		}
 	}
 
 	public static void play() {
+		activePlayer = LocalPlayer.getColor();
 		GUI.showRoll();
 		System.out.println("Turn " + turn);
 		System.out.println(board.toString());
