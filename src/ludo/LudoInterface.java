@@ -10,4 +10,7 @@ public interface LudoInterface extends Remote{
 	void update(EnumMap<Player, HumanPlayer> registries) throws RemoteException;
 	void comunicateStartingRoll(Player player, int rollValue) throws RemoteException;
 	void giveTurn() throws RemoteException;
+	void sendRoll(Player color, Integer rollValue) throws RemoteException;
+	void sendPlayToken(Player color) throws RemoteException;
+	void sendMoveToken(Player color, int position, int steps) throws RemoteException;
 }

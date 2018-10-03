@@ -21,8 +21,10 @@ import ludo.Board;
 import ludo.GameEngine;
 import ludo.GameRoom;
 import ludo.HumanPlayer;
+import ludo.LocalPlayer;
 import ludo.Player;
 import ludo.Square;
+import ludo.Token;
 
 @SuppressWarnings("serial")
 public class GUIBoard extends JPanel {
@@ -51,21 +53,19 @@ public class GUIBoard extends JPanel {
                 
                 for (int i=0; i<regularSquares.length; i++) {
                 	Shape s = regularSquares[i];
-                    if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
+                    if (s.contains(me.getPoint()) && board.getRegular()[i].isTokenOfPlayer(LocalPlayer.getColor())) {//check if mouse is clicked within shape
                     	//we can either just print out the object class name
                         System.out.println("Clicked " + i);
                         GameEngine.moveToken(i);
                         isMoving = false;
                     }
                 }
-                for(Player player : Player.values()) {
-                	for (int i=0; i<5; i++) {
-                    	Shape s = homeSquares.get(player)[i];
-                        if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
-                            System.out.println("Clicked "+ player.toString() + " home " + i);
-                            GameEngine.moveInsideHomeColumn(i);
-                            isMoving = false;
-                        }
+            	for (int i=0; i<5; i++) {
+                	Shape s = homeSquares.get(LocalPlayer.getColor())[i];
+                    if (s.contains(me.getPoint())) {//check if mouse is clicked within shape
+                        System.out.println("Clicked "+ LocalPlayer.getColor().toString() + " home " + i);
+                        GameEngine.moveInsideHomeColumn(i);
+                        isMoving = false;
                     }
                 }
             }
@@ -213,7 +213,7 @@ public class GUIBoard extends JPanel {
 		Shape circle = new Ellipse2D.Double(squareSize * p.x + offset, squareSize * p.y + offset, squareSize, squareSize);
 		g2.fill(circle); 
 		g2.setColor(Color.BLACK);
-		if(isMoving) {
+		if(isMoving && s.isTokenOfPlayer(LocalPlayer.getColor())) {
 			g2.setStroke(new BasicStroke(3));
 			g2.draw(circle);
 			g2.setStroke(new BasicStroke());
@@ -226,4 +226,5 @@ public class GUIBoard extends JPanel {
 		isMoving = b;
 		this.repaint();
 	}
+	
 }

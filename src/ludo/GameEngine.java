@@ -43,11 +43,12 @@ public class GameEngine {
 
 	public static void rollDice() {
 		rollValue = Dice.roll();
-				
+		
+		
 		System.out.println("Roll: " + rollValue);
 		GUI.showText("Roll: " + rollValue);
 		Player player = LocalPlayer.getColor();
-		
+		Ludo.communicateRoll(rollValue);
 		boolean canMove = board.hasPlayerAvailableMoves(player, rollValue);
 		boolean canPutToken = rollValue == 6 && board.hasPlayerUnusedToken(player);
 		
@@ -60,9 +61,9 @@ public class GameEngine {
 	}
 
 	public static void playToken() {
+		Ludo.communicatePlayToken();
 		Player player = LocalPlayer.getColor();
-		board.putIn(player);
-		gBoard.update();
+		playerPlaysToken(player);
 		if(rollValue == 6) {
 			play();
 		}
@@ -79,19 +80,28 @@ public class GameEngine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		activePlayer = nextPlayer;
 		System.out.println("Turn ended");
+		gBoard.update();
 		
 	}
 
 	public static void moveToken(int position) {
-		board.move(LocalPlayer.getColor(), position, rollValue);
-		gBoard.update();
+		Player player = LocalPlayer.getColor();
+		moveTokenForPlayer(player, position, rollValue);
+		Ludo.communicateMoveToken(position, rollValue);
 		if(rollValue == 6) {
 			play();
 		} else {
 			GUI.showPass();
 		}
 	}
+
+	public static void moveTokenForPlayer(Player player, int position, Integer steps) {
+		board.move(player, position, steps);
+		gBoard.update();
+	}
+	
 	
 	public static void moveInsideHomeColumn(int position) {
 		board.moveInsideHomeColumn(LocalPlayer.getColor(), position, rollValue);
@@ -101,6 +111,11 @@ public class GameEngine {
 	
 	public static Player getActivePlayer() {
 		return activePlayer;
+	}
+
+	public static void playerPlaysToken(Player player) {
+		board.putIn(player);
+		gBoard.update();
 	}
 
 }

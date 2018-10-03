@@ -76,6 +76,57 @@ public class Ludo implements LudoInterface{
 		
 	}
 
+	public static void communicateRoll(Integer rollValue) {
+		for(HumanPlayer player : GameRoom.getOthers().values()) {
+			try {
+				player.getConnection().sendRoll(LocalPlayer.getColor(), rollValue);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	@Override
+	public void sendRoll(Player color, Integer rollValue) throws RemoteException {
+		// TODO Auto-generated method stub
+		GUI.showText(color.toString() + " player rolled " + rollValue);
+	}
+
+	public static void communicatePlayToken() {
+		for(HumanPlayer player : GameRoom.getOthers().values()) {
+			try {
+				player.getConnection().sendPlayToken(LocalPlayer.getColor());
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void sendPlayToken(Player player) throws RemoteException {
+		GameEngine.playerPlaysToken(player);
+		
+	}
+
+	public static void communicateMoveToken(int position, int steps) {
+		for(HumanPlayer player : GameRoom.getOthers().values()) {
+			try {
+				player.getConnection().sendMoveToken(LocalPlayer.getColor(), position, steps);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void sendMoveToken(Player player, int position, int steps) throws RemoteException {
+		GameEngine.moveTokenForPlayer(player, position, steps);
+	}
+
 	
 	
 	
