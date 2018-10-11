@@ -26,9 +26,9 @@ public class FirstPlayerElection {
 			throw new UnsupportedOperationException();
 		}
 		
+		GUI.showText(buildMessage());
 		int currentRoll = Dice.roll();
 		System.out.println(currentRoll);
-		GUI.showText("Election Roll:" + currentRoll);
 		comunicateStartingRoll(currentRoll);
 		Player currentPlayer = LocalPlayer.getColor();
 		addRollForPlayer(currentPlayer, currentRoll);
@@ -49,6 +49,7 @@ public class FirstPlayerElection {
 
 	public static void addRollForPlayer(Player p, int rollValue) {
 		playersRoll.put(p,rollValue);
+		GUI.showText(buildMessage());
 		if(hasEveryoneFineshedRolling()) {
 			Integer maxRoll = 0;
 			Player winningPlayer = null;
@@ -64,6 +65,18 @@ public class FirstPlayerElection {
 
 	private static boolean hasEveryoneFineshedRolling() {
 		return playersRoll.keySet().equals(eligiblePlayers);
+	}
+	
+	private static String buildMessage() {
+		String msg = "First player election:\n";
+		for(Player player : eligiblePlayers) {
+			String nickname = GameRoom.getInstance().get(player).getNickname();
+			String playerColor = player.toString();
+			Integer rollValue = playersRoll.get(player);
+			String rollTxt = rollValue == null ? "-" : rollValue.toString();
+			msg = msg + nickname + " (" + playerColor + ")" + ": " + rollTxt +"\n";
+		}
+		return msg;
 	}
 	
 	

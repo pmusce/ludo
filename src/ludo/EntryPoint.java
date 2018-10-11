@@ -22,12 +22,14 @@ public class EntryPoint {
 		localPlayer.setNickname(nickname);
 		
 		createRegistry(port);
+		GUI.start();
+		
 		if(!isCreatingRoom) {
 			int remotePort = Integer.parseInt(args[1]);
 			connectToRemotePlayer(nickname, remotePort);
 		}
 		
-		GUI.start();
+		
 	}
 	
 	private static void connectToRemotePlayer(String nickname, int remotePort) {

@@ -70,7 +70,6 @@ public class GameEngine {
 	}
 
 	public static void passTurn() {
-		// TODO Auto-generated method stub
 		turn++;
 		GUI.showWaiting();
 		Player nextPlayer = GameRoom.getNext(activePlayer);

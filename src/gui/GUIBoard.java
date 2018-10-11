@@ -24,7 +24,6 @@ import ludo.HumanPlayer;
 import ludo.LocalPlayer;
 import ludo.Player;
 import ludo.Square;
-import ludo.Token;
 
 @SuppressWarnings("serial")
 public class GUIBoard extends JPanel {
@@ -77,8 +76,39 @@ public class GUIBoard extends JPanel {
 		Graphics2D g2 = (Graphics2D)g;
 		paintBoard(g2);
 		paintNicknames(g2);
+		paintFinish(g2);
 	}
 	
+	private void paintFinish(Graphics2D g2) {
+		FontMetrics fm = g2.getFontMetrics();
+		for(Entry<Player, HumanPlayer> player : GameRoom.getInstance().entrySet()) {
+			Player color = player.getKey();
+			float x = 7, y = 7;
+			
+			g2.setColor(color.getColor());
+			
+			switch (color) {
+			case RED:
+				x = 6;
+				break;
+			case GREEN:
+				y = 6;
+				break;
+			case YELLOW:
+				x = 8;
+				break;
+			case BLUE:
+				y = 8;
+				break;
+			}
+			
+			int finishTokens = board.getFinishing().get(color);
+			g2.drawString(Integer.toString(finishTokens), x * squareSize + 15 + offset, y * squareSize + fm.getHeight() + offset);
+			
+		}
+		
+	}
+
 	public void paintNicknames(Graphics2D g2) {
 		FontMetrics fm = g2.getFontMetrics();
 		for(Entry<Player, HumanPlayer> player : GameRoom.getInstance().entrySet()) {
@@ -105,10 +135,14 @@ public class GUIBoard extends JPanel {
 				y = 9;
 				break;
 			}
-			g2.drawString(nickname, x * squareSize + offset, y * squareSize + fm.getHeight() + offset);
+			
 			if(color.equals(GameEngine.getActivePlayer())) {
-				g2.drawString("(playing)", x * squareSize + offset, (y + 1) * squareSize + fm.getHeight() + offset);
+				nickname = nickname + " (playing)";
 			}
+			g2.drawString(nickname, x * squareSize + offset, y * squareSize + fm.getHeight() + offset);
+			int availableTokens = board.getStarting().get(color);
+			g2.drawString("Available tokens: " + availableTokens, x * squareSize + offset, (y + 1) * squareSize + fm.getHeight() + offset);
+			
 		}
 	}
 	

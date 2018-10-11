@@ -1,19 +1,20 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.Map.Entry;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import ludo.Board;
-import ludo.GameEngine;
 import ludo.HumanPlayer;
 import ludo.LocalPlayer;
 import ludo.Ludo;
@@ -24,6 +25,7 @@ public class GUI {
 	private static JFrame waitingRoomFrame;
 	private static GUIBoard gBoard;
 	private static ActionsPanel actionsPanel;
+	private static JPanel usersPanel;
 	
 	public static void start() {
     	//Schedule a job for the event-dispatching thread:
@@ -39,8 +41,9 @@ public class GUI {
 		//Create and set up the window.
         waitingRoomFrame = new JFrame("Ludo - " + LocalPlayer.getColor().toString());
         waitingRoomFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        waitingRoomFrame.setMinimumSize(new Dimension(100,0));
         
-        showConnectedUsers();
+        
         
         JButton buttonReady = new JButton("Ready");
         buttonReady.addActionListener(new ActionListener() {
@@ -54,54 +57,46 @@ public class GUI {
 			}
 		});
         
-        JButton buttonRoll = new JButton("Roll");
-        buttonRoll.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				GameEngine.rollDice();
-			}
-		});
-        
-        JTextField moveInput = new JTextField(4);
-        JButton buttonMove = new JButton("Move");
-        buttonMove.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						int tokenPosition = Integer.parseInt(moveInput.getText());
-						GameEngine.moveToken(tokenPosition);
-					}
-				});
         
         
         JPanel buttonBar = new JPanel();
         buttonBar.setLayout(new FlowLayout());
         buttonBar.add(buttonReady);
-        buttonBar.add(buttonRoll);
-        buttonBar.add(moveInput);
-        buttonBar.add(buttonMove);
-		waitingRoomFrame.getContentPane().add(buttonBar);
+        usersPanel = new JPanel();
+        usersPanel.setLayout(new BoxLayout(usersPanel, BoxLayout.Y_AXIS));
+        showConnectedUsers();
+        
+        JPanel waitingRoomPanel = new JPanel();
+        waitingRoomPanel.setLayout(new BoxLayout(waitingRoomPanel, BoxLayout.Y_AXIS));
+        
+        
+        waitingRoomPanel.add(buttonBar);
+        waitingRoomPanel.add(usersPanel);
+		waitingRoomFrame.getContentPane().add(waitingRoomPanel);
         
         //Display the window.
         waitingRoomFrame.pack();
         waitingRoomFrame.setVisible(true);
 	}
 
-	public static void showConnectedUsers() {		
+	public static void showConnectedUsers() {
+		usersPanel.add(new JLabel("Prova"));
 		for(Entry<Player, HumanPlayer> player :  GameRoom.getInstance().entrySet()) {
 			String output;
 			try {
 				Player color = player.getKey();
-				output = player.getValue().getConnection().isReady() ? "" : "not ";
-				System.out.println(color.toString() + " " + player.getValue().getNickname() + ": " + output + "ready");
+				output = color.toString() + " " + player.getValue().getNickname() + ": ";
+				output += player.getValue().getConnection().isReady() ? "" : "not ";
+				output += "ready";
+				
+				System.out.println(output);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		}
-		
+		waitingRoomFrame.revalidate();
 		System.out.println("----");
 	}
 
