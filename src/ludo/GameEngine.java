@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import gui.GUI;
 import gui.GUIBoard;
 
-public class GameEngine {
+public class GameEngine{
 	private static Board board ;
 	private static GUIBoard gBoard;
 	private static Player activePlayer;
@@ -76,7 +76,7 @@ public class GameEngine {
 		try {
 			GameRoom.getInstance().get(nextPlayer).getConnection().giveTurn();
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		activePlayer = nextPlayer;

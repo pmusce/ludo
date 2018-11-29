@@ -47,13 +47,18 @@ public class GUI {
         
         JButton buttonReady = new JButton("Ready");
         buttonReady.addActionListener(new ActionListener() {
+        	Runnable changer = new Runnable() {
+                public void run() {
+                	HumanPlayer localPlayer =  LocalPlayer.getInstance();
+    				localPlayer.toggleReady();
+    				Ludo.updateAll();
+    				showConnectedUsers();
+                }
+              };
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				HumanPlayer localPlayer =  LocalPlayer.getInstance();
-				localPlayer.toggleReady();
-				Ludo.updateAll();
-				showConnectedUsers();
+				new Thread(changer).start();
 			}
 		});
         
@@ -64,7 +69,7 @@ public class GUI {
         buttonBar.add(buttonReady);
         usersPanel = new JPanel();
         usersPanel.setLayout(new BoxLayout(usersPanel, BoxLayout.Y_AXIS));
-        showConnectedUsers();
+        //showConnectedUsers();
         
         JPanel waitingRoomPanel = new JPanel();
         waitingRoomPanel.setLayout(new BoxLayout(waitingRoomPanel, BoxLayout.Y_AXIS));
@@ -79,7 +84,7 @@ public class GUI {
         waitingRoomFrame.setVisible(true);
 	}
 
-	public static void showConnectedUsers() {
+	private static void showConnectedUsers() {
 		usersPanel.add(new JLabel("Prova"));
 		for(Entry<Player, HumanPlayer> player :  GameRoom.getInstance().entrySet()) {
 			String output;

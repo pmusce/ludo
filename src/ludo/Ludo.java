@@ -13,7 +13,7 @@ public class Ludo implements LudoInterface{
 	@Override
 	public void connect(HumanPlayer player) throws RemoteException {
 		GameRoom.addPlayer(player);
-		GUI.showConnectedUsers();
+		//GUI.showConnectedUsers();
 		updateAll();
 	}
 	
@@ -56,7 +56,7 @@ public class Ludo implements LudoInterface{
 			GameEngine.prepareGame();
 			FirstPlayerElection.startTurn();
 		}
-		GUI.showConnectedUsers();
+		//GUI.showConnectedUsers();
 	}
 
 	@Override

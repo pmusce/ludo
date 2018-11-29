@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
 
 import gui.GUI;
 
@@ -11,17 +12,19 @@ public class FirstPlayerElection {
 	private static Map <Player, Integer> playersRoll;
 	private static boolean eligible;
 	private static Set<Player> eligiblePlayers;
-	private static int turn;
+	private static Semaphore lock = new Semaphore(0, true);
 	
-	public static void begin() {
+	public synchronized static void begin() {
 		System.out.println("Starting election for first player");
 		eligible = true;
-		turn = 0;
 		eligiblePlayers = GameRoom.getInstance().keySet();
-		playersRoll = new HashMap<Player, Integer>();
+		if(playersRoll == null) {			
+			playersRoll = new HashMap<Player, Integer>();
+			lock.release();
+		}
 	}
 
-	public static void startTurn() {
+	public synchronized static void startTurn() {
 		if(!eligible) {
 			throw new UnsupportedOperationException();
 		}
@@ -34,7 +37,7 @@ public class FirstPlayerElection {
 		addRollForPlayer(currentPlayer, currentRoll);
 	}
 	
-	private static void comunicateStartingRoll(int currentRoll) {
+	private synchronized static void comunicateStartingRoll(int currentRoll) {
 		Player currentPlayer = LocalPlayer.getColor();
 		
 		for(HumanPlayer player : GameRoom.getOthers().values()) {
@@ -47,8 +50,15 @@ public class FirstPlayerElection {
 		}
 	}
 
-	public static void addRollForPlayer(Player p, int rollValue) {
+	public synchronized static void addRollForPlayer(Player p, int rollValue) {
+		try {
+			lock.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		playersRoll.put(p,rollValue);
+		lock.release();
 		GUI.showText(buildMessage());
 		if(hasEveryoneFineshedRolling()) {
 			Integer maxRoll = 0;
@@ -63,11 +73,11 @@ public class FirstPlayerElection {
 		}
 	}
 
-	private static boolean hasEveryoneFineshedRolling() {
+	private synchronized static boolean hasEveryoneFineshedRolling() {
 		return playersRoll.keySet().equals(eligiblePlayers);
 	}
 	
-	private static String buildMessage() {
+	private synchronized static String buildMessage() {
 		String msg = "First player election:\n";
 		for(Player player : eligiblePlayers) {
 			String nickname = GameRoom.getInstance().get(player).getNickname();
