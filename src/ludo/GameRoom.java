@@ -60,4 +60,20 @@ public class GameRoom {
 		return result;
 	}
 
+	public static Set<LudoInterface> getConnections() {
+		Set<LudoInterface> connections = new HashSet<LudoInterface>();
+		for(HumanPlayer p : getInstance().values()) {
+			connections.add(p.getConnection());
+		}
+		return connections;
+	}
+	
+	public static Set<LudoInterface> getOthersConnections() {
+		Set<LudoInterface> connections = new HashSet<LudoInterface>();
+		for(HumanPlayer p : getOthers().values()) {
+			connections.add(p.getConnection());
+		}
+		return connections;
+	}
+
 }

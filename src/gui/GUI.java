@@ -19,6 +19,11 @@ import ludo.HumanPlayer;
 import ludo.LocalPlayer;
 import ludo.Ludo;
 import ludo.Player;
+import net.BroadcastFactory;
+import net.Message;
+import net.MessageFactory;
+import net.ReliableBroadcast;
+import net.SimpleBroadcast;
 import ludo.GameRoom;
 
 public class GUI {
@@ -50,9 +55,11 @@ public class GUI {
         	Runnable changer = new Runnable() {
                 public void run() {
                 	HumanPlayer localPlayer =  LocalPlayer.getInstance();
-    				localPlayer.toggleReady();
-    				Ludo.updateAll();
-    				showConnectedUsers();
+    				// localPlayer.toggleReady();
+    				Message msg = MessageFactory.create(localPlayer.getNickname() + " ready");
+    				BroadcastFactory.getInstance().broadcast(msg);
+    				// Ludo.updateAll();
+    				// showConnectedUsers();
                 }
               };
 			

@@ -4,6 +4,9 @@ import java.rmi.RemoteException;
 import java.util.EnumMap;
 
 import gui.GUI;
+import net.BroadcastFactory;
+import net.Message;
+import net.ReliableBroadcast;
 
 public class Ludo implements LudoInterface{	
 
@@ -125,6 +128,11 @@ public class Ludo implements LudoInterface{
 	@Override
 	public void sendMoveToken(Player player, int position, int steps) throws RemoteException {
 		GameEngine.moveTokenForPlayer(player, position, steps);
+	}
+
+	@Override
+	public void sendMessage(Message message) throws RemoteException {
+		BroadcastFactory.getInstance().receive(message);
 	}
 
 	

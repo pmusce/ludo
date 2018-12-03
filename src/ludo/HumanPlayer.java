@@ -2,6 +2,7 @@ package ludo;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.Objects;
 
 public class HumanPlayer implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -31,8 +32,18 @@ public class HumanPlayer implements Serializable{
 		}
 	}
 	
-	public boolean equals(HumanPlayer obj) {
-		return this.nickname.equals(obj.getNickname());		
+	@Override
+	public boolean equals(Object other) {
+		if(other == null || (getClass() != other.getClass())) {			
+			return false;
+		}
+		HumanPlayer otherPlayer = (HumanPlayer)other;
+		return this.nickname.equals(otherPlayer.getNickname());		
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(nickname);
 	}
 	
 	public boolean checkIfAllPlayersAreReady() {
