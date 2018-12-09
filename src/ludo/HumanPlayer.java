@@ -1,7 +1,6 @@
 package ludo;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class HumanPlayer implements Serializable{
@@ -24,12 +23,6 @@ public class HumanPlayer implements Serializable{
 	}
 	public void toggleReady() {
 		isReady = !isReady;
-		if(isReady) {
-			if(checkIfAllPlayersAreReady()) {
-				System.out.println("ALL READY");
-				// TODO Start game
-			}
-		}
 	}
 	
 	@Override
@@ -46,23 +39,23 @@ public class HumanPlayer implements Serializable{
 		return Objects.hash(nickname);
 	}
 	
-	public boolean checkIfAllPlayersAreReady() {
-		if(!isReady) return false;
-		
-		for(HumanPlayer player : GameRoom.getOthers().values()) {
-			System.out.println("checkIfAllPlayersAreReady" + player.nickname);	
-			try {
-				if(!player.getConnection().isReady()) {
-					return false;
-				}
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-		}
-		return true;
-	}
+//	public boolean checkIfAllPlayersAreReady() {
+//		if(!isReady) return false;
+//		
+//		for(HumanPlayer player : GameRoom.getOthers().values()) {
+//			System.out.println("checkIfAllPlayersAreReady" + player.nickname);	
+//			try {
+//				if(!player.getConnection().isReady()) {
+//					return false;
+//				}
+//			} catch (RemoteException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		
+//		}
+//		return true;
+//	}
 	public LudoInterface getConnection() {
 		return connection;
 	}

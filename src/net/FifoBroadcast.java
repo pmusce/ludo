@@ -33,13 +33,9 @@ public class FifoBroadcast extends ReliableBroadcast implements MessageHandler {
 
 	@Override
 	public void deliver(Message message) {
-		System.out.println("R-deliver " + message.toString());
-
 		buffer.add(message);
 		while (isAnyMessageReadyForDelivery(message)) {
 			Message nextMsg = getNextMessage(message);
-			System.out.println("F-deliver " + nextMsg.toString());
-
 			messageHandler.deliver(nextMsg);
 			int nextValue = next.get(nextMsg.getSender());
 			next.put(nextMsg.getSender(), nextValue + 1);

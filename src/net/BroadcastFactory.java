@@ -13,7 +13,7 @@ public class BroadcastFactory {
 	
 	private static BroadcastInterface createBroadcast() {
 		BroadcastInterface broadcast = new CausalBroadcast();
-		broadcast.setMessageHandler(new SimpleMessageHandler());
+		broadcast.setMessageHandler(new LudoMessageHandler());
 		return broadcast;
 	}
 }

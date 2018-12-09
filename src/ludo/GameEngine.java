@@ -1,18 +1,21 @@
 package ludo;
 
-import java.rmi.RemoteException;
-
 import gui.GUI;
 import gui.GUIBoard;
 
 public class GameEngine{
+	private static boolean gameStarted = false;
 	private static Board board ;
 	private static GUIBoard gBoard;
 	private static Player activePlayer;
 	private static Integer rollValue;
 	private static Integer turn;
 
-	public static void prepareGame() {
+	public synchronized static void prepareGame() {
+		if(gameStarted) {
+			return;
+		}
+		gameStarted = true;
 		turn = 0;
 		board = new Board();
 		gBoard = GUI.createBoardFrame(board);
@@ -73,12 +76,12 @@ public class GameEngine{
 		turn++;
 		GUI.showWaiting();
 		Player nextPlayer = GameRoom.getNext(activePlayer);
-		try {
-			GameRoom.getInstance().get(nextPlayer).getConnection().giveTurn();
-		} catch (RemoteException e) {
-			
-			e.printStackTrace();
-		}
+//		try {
+//			GameRoom.getInstance().get(nextPlayer).getConnection().giveTurn();
+//		} catch (RemoteException e) {
+//			
+//			e.printStackTrace();
+//		}
 		activePlayer = nextPlayer;
 		System.out.println("Turn ended");
 		gBoard.update();

@@ -5,26 +5,16 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.RemoteException;
-import java.util.Map.Entry;
+
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import commands.CommandDeliverer;
 import ludo.Board;
-import ludo.HumanPlayer;
 import ludo.LocalPlayer;
-import ludo.Ludo;
-import ludo.Player;
-import net.BroadcastFactory;
-import net.Message;
-import net.MessageFactory;
-import net.ReliableBroadcast;
-import net.SimpleBroadcast;
-import ludo.GameRoom;
 
 public class GUI {
 	private static JFrame waitingRoomFrame;
@@ -54,12 +44,7 @@ public class GUI {
         buttonReady.addActionListener(new ActionListener() {
         	Runnable changer = new Runnable() {
                 public void run() {
-                	HumanPlayer localPlayer =  LocalPlayer.getInstance();
-    				// localPlayer.toggleReady();
-    				Message msg = MessageFactory.create(localPlayer.getNickname() + " ready");
-    				BroadcastFactory.getInstance().broadcast(msg);
-    				// Ludo.updateAll();
-    				// showConnectedUsers();
+                	CommandDeliverer.toggleReady();
                 }
               };
 			
@@ -76,7 +61,6 @@ public class GUI {
         buttonBar.add(buttonReady);
         usersPanel = new JPanel();
         usersPanel.setLayout(new BoxLayout(usersPanel, BoxLayout.Y_AXIS));
-        //showConnectedUsers();
         
         JPanel waitingRoomPanel = new JPanel();
         waitingRoomPanel.setLayout(new BoxLayout(waitingRoomPanel, BoxLayout.Y_AXIS));
@@ -91,26 +75,26 @@ public class GUI {
         waitingRoomFrame.setVisible(true);
 	}
 
-	private static void showConnectedUsers() {
-		usersPanel.add(new JLabel("Prova"));
-		for(Entry<Player, HumanPlayer> player :  GameRoom.getInstance().entrySet()) {
-			String output;
-			try {
-				Player color = player.getKey();
-				output = color.toString() + " " + player.getValue().getNickname() + ": ";
-				output += player.getValue().getConnection().isReady() ? "" : "not ";
-				output += "ready";
-				
-				System.out.println(output);
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		waitingRoomFrame.revalidate();
-		System.out.println("----");
-	}
+//	private static void showConnectedUsers() {
+//		usersPanel.add(new JLabel("Prova"));
+//		for(Entry<Player, HumanPlayer> player :  GameRoom.getInstance().entrySet()) {
+//			String output;
+//			try {
+//				Player color = player.getKey();
+//				output = color.toString() + " " + player.getValue().getNickname() + ": ";
+//				output += player.getValue().getConnection().isReady() ? "" : "not ";
+//				output += "ready";
+//				
+//				System.out.println(output);
+//			} catch (RemoteException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//		}
+//		waitingRoomFrame.revalidate();
+//		System.out.println("----");
+//	}
 
 	public static GUIBoard createBoardFrame(Board board) {
 		gBoard = new GUIBoard(board);

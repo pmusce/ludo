@@ -75,5 +75,29 @@ public class GameRoom {
 		}
 		return connections;
 	}
+	
+	public static void togglePlayerReady(HumanPlayer player) {
+		for(HumanPlayer p : getInstance().values()) {
+			if(p.equals(player)) {
+				p.toggleReady();
+			}
+		}
+		printPlayers();
+	}
+	
+	public static boolean areAllPlayersReady() {
+		for(HumanPlayer player : getInstance().values()) {
+			if(!player.isReady()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static void printPlayers() {
+		for(HumanPlayer player : getInstance().values()) {
+			System.out.println(player.getNickname() + " - " + player.isReady());
+		}
+	}
 
 }

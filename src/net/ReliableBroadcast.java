@@ -23,7 +23,6 @@ public class ReliableBroadcast extends Broadcast {
 	}
 
 	public void receive(Message message) {
-		System.out.println("R-receive " + message.toString());
 		if(!delivered.contains(message)) {
 			delivered.add(message);
 			messageHandler.deliver(message);
