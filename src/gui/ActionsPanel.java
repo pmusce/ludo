@@ -59,8 +59,6 @@ public class ActionsPanel extends JPanel implements ActionListener {
 		messageLabel.setText(str);
 	}
 
-	
-
 	public void showMoveAndPutToken(boolean enableMove, boolean enablePutToken) {
 		hideAllButtons();
 		buttonMove.setVisible(true);

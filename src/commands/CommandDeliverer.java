@@ -11,11 +11,11 @@ import net.MessageFactory;
 
 public class CommandDeliverer implements Runnable {
 	private static BlockingQueue<Message> queue;
-	
+
 	public CommandDeliverer() {
 		queue = new LinkedBlockingQueue<Message>();
 	}
-	
+
 	private static void broadcastCommand(Command command) {
 		Message msg = MessageFactory.create(command);
 		try {
@@ -25,18 +25,17 @@ public class CommandDeliverer implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void toggleReady() {
-    	Command command = new ReadyCommand(LocalPlayer.getInstance());
+		Command command = new ReadyCommand(LocalPlayer.getInstance());
 		broadcastCommand(command);
 	}
-	
-	
+
 	public static void startGame() {
 		Command command = new StartGameCommand();
 		broadcastCommand(command);
 	}
-	
+
 	public static void comunicateStartingRoll(int currentRoll) {
 		Player currentPlayer = LocalPlayer.getColor();
 		Command command = new StartingRollCommand(currentPlayer, currentRoll);
@@ -46,6 +45,17 @@ public class CommandDeliverer implements Runnable {
 	public static void communicateRollDice(int rollValue) {
 		Player currentPlayer = LocalPlayer.getColor();
 		Command command = new RollDiceCommand(currentPlayer, rollValue);
+		broadcastCommand(command);
+	}
+
+	public static void passTurn(Player nextPlayer) {
+		Command command = new PassTurnCommand(nextPlayer);
+		broadcastCommand(command);
+	}
+
+	public static void playToken() {
+		Player currentPlayer = LocalPlayer.getColor();
+		Command command = new PlayTokenCommand(currentPlayer);
 		broadcastCommand(command);
 	}
 
@@ -59,7 +69,12 @@ public class CommandDeliverer implements Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+	}
+
+	public static void communicateMoveToken(int position, Integer rollValue) {
+		Player player = LocalPlayer.getColor();
+		Command command = new MoveTokenCommand(player, position, rollValue);
+		broadcastCommand(command);
 	}
 }

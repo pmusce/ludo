@@ -24,8 +24,7 @@ public class GameEngine{
 	}
 	
 	public static void startGame(Player startingPlayer) {
-		activePlayer = startingPlayer;
-		gBoard.update();
+		giveTurnToPlayer(startingPlayer);
 		if(isMyTurn()) {
 			play();
 		} else {
@@ -67,9 +66,8 @@ public class GameEngine{
 	}
 
 	public static void playToken() {
-		Ludo.communicatePlayToken();
-		Player player = LocalPlayer.getColor();
-		playerPlaysToken(player);
+		CommandDeliverer.playToken();
+		
 		if(rollValue == 6) {
 			play();
 		}
@@ -79,22 +77,20 @@ public class GameEngine{
 		turn++;
 		GUI.showWaiting();
 		Player nextPlayer = GameRoom.getNext(activePlayer);
-//		try {
-//			GameRoom.getInstance().get(nextPlayer).getConnection().giveTurn();
-//		} catch (RemoteException e) {
-//			
-//			e.printStackTrace();
-//		}
-		activePlayer = nextPlayer;
+		CommandDeliverer.passTurn(nextPlayer);
 		System.out.println("Turn ended");
-		gBoard.update();
-		
 	}
 
+	public static void giveTurnToPlayer(Player nextPlayer) {
+		activePlayer = nextPlayer;
+		gBoard.update();
+		if(LocalPlayer.getColor().equals(activePlayer)) {
+			GameEngine.play();
+		}
+	}
+	
 	public static void moveToken(int position) {
-		Player player = LocalPlayer.getColor();
-		moveTokenForPlayer(player, position, rollValue);
-		Ludo.communicateMoveToken(position, rollValue);
+		CommandDeliverer.communicateMoveToken(position, rollValue);
 		if(rollValue == 6) {
 			play();
 		} else {
