@@ -92,7 +92,7 @@ public class Board {
 
 	public boolean isGoingToHomeColumn(Player player, int tokenPosition, int steps) {
 		int normalizedPosition = (tokenPosition - player.getStartingSquare() + regular.length) % regular.length;
-		return (normalizedPosition + steps > regular.length);
+		return (normalizedPosition + steps >= regular.length);
 	}
 
 	public void moveInsideHomeColumn(Player player, int tokenPosition, int steps) throws MoveNotAllowedException {

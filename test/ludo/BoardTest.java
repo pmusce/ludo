@@ -124,6 +124,17 @@ public class BoardTest {
 	}
 	
 	@Test
+	public void testGoesInFirstCellOfHomeColumn() {
+		Player p = Player.BLUE;
+		board.putIn(p);
+		
+		int position = p.getStartingSquare();
+		position = board.move(p, position, 13*4 - 5);		
+		
+		assertTrue(board.isGoingToHomeColumn(p, position, 5));
+	}
+	
+	@Test
 	public void testMoveFromHomeColumn() {
 		Player p = Player.GREEN;
 		board.putIn(p);
