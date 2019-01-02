@@ -1,5 +1,6 @@
 package ludo;
 
+import commands.CommandDeliverer;
 import gui.GUI;
 import gui.GUIBoard;
 
@@ -47,11 +48,13 @@ public class GameEngine{
 	public static void rollDice() {
 		rollValue = Dice.roll();
 		
-		
 		System.out.println("Roll: " + rollValue);
 		GUI.showText("Roll: " + rollValue);
+		CommandDeliverer.communicateRollDice(rollValue);
+	}
+
+	public static void handleRoll(int rollValue) {
 		Player player = LocalPlayer.getColor();
-		Ludo.communicateRoll(rollValue);
 		boolean canMove = board.hasPlayerAvailableMoves(player, rollValue);
 		boolean canPutToken = rollValue == 6 && board.hasPlayerUnusedToken(player);
 		

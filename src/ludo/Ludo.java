@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.EnumMap;
 
 import net.BroadcastFactory;
+import net.BroadcastReceiver;
 import net.Message;
 	
 public class Ludo implements LudoInterface{	
@@ -14,7 +15,6 @@ public class Ludo implements LudoInterface{
 	@Override
 	public void connect(HumanPlayer player) throws RemoteException {
 		GameRoom.addPlayer(player);
-		//GUI.showConnectedUsers();
 		updateAll();
 	}
 	
@@ -44,48 +44,12 @@ public class Ludo implements LudoInterface{
 	@Override
 	public void update(EnumMap<Player, HumanPlayer> registries) throws RemoteException {
 		GameRoom.updateAll(registries);
-//		boolean allPlayersReady = LocalPlayer.getInstance().checkIfAllPlayersAreReady();
-		boolean allPlayersReady = false;
-		if(allPlayersReady) {
-			GameEngine.prepareGame();
-			FirstPlayerElection.startTurn();
-		}
-		//GUI.showConnectedUsers();
 	}
 
-//	@Override
-//	public boolean isReady() throws RemoteException {
-//		HumanPlayer gameState = LocalPlayer.getInstance();
-//		return gameState.isReady();
-//	}
-//
-//	@Override
-//	public void comunicateStartingRoll(Player player, int rollValue) throws RemoteException {
-//		FirstPlayerElection.addRollForPlayer(player, rollValue);
-//	}
-//
 //	@Override
 //	public void giveTurn() throws RemoteException {
 //		GameEngine.play();
 //		
-//	}
-
-	public static void communicateRoll(Integer rollValue) {
-		for(HumanPlayer player : GameRoom.getOthers().values()) {
-//			try {
-//				player.getConnection().sendRoll(LocalPlayer.getColor(), rollValue);
-//			} catch (RemoteException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-		}
-		
-	}
-
-//	@Override
-//	public void sendRoll(Player color, Integer rollValue) throws RemoteException {
-//		// TODO Auto-generated method stub
-//		GUI.showText(color.toString() + " player rolled " + rollValue);
 //	}
 
 	public static void communicatePlayToken() {
@@ -123,7 +87,7 @@ public class Ludo implements LudoInterface{
 
 	@Override
 	public void sendMessage(Message message) throws RemoteException {
-		BroadcastFactory.getInstance().receive(message);
+		BroadcastReceiver.enqueueMessage(message);
 	}
 
 	

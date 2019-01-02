@@ -6,7 +6,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import commands.CommandDeliverer;
+import commands.CommandReceiver;
 import gui.GUI;
+import net.BroadcastReceiver;
 
 public class EntryPoint {
 	private static Registry localRegistry;
@@ -20,6 +23,15 @@ public class EntryPoint {
 		
 		HumanPlayer localPlayer = LocalPlayer.getInstance();
 		localPlayer.setNickname(nickname);
+		
+		BroadcastReceiver broadcastReceiver = new BroadcastReceiver();
+		new Thread(broadcastReceiver).start();
+		
+		CommandDeliverer commandDeliverer = new CommandDeliverer();
+		new Thread(commandDeliverer).start();
+		
+		CommandReceiver commandConsumer = new CommandReceiver();
+		new Thread(commandConsumer).start();
 		
 		createRegistry(port);
 		GUI.start();

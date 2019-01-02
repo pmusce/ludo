@@ -96,7 +96,7 @@ public class GameRoom {
 	
 	public static void printPlayers() {
 		for(HumanPlayer player : getInstance().values()) {
-			System.out.println(player.getNickname() + " - " + player.isReady());
+//			System.out.println(player.getNickname() + " - " + player.isReady());
 		}
 	}
 

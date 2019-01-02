@@ -1,6 +1,7 @@
 package ludo;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import commands.CommandDeliverer;
@@ -35,17 +36,42 @@ public class FirstPlayerElection {
 	public static void addRollForPlayer(Player p, int rollValue) {
 		playersRoll.put(p,rollValue);
 		GUI.showText(buildMessage());
-		if(hasEveryoneFineshedRolling()) {
-			Integer maxRoll = 0;
-			Player winningPlayer = null;
-			for(Map.Entry<Player, Integer> entry : playersRoll.entrySet()) {
-				if(entry.getValue() > maxRoll) {
-					maxRoll = entry.getValue();
-					winningPlayer = entry.getKey();
-				}
-			}
-			GameEngine.startGame(winningPlayer);
+		System.out.println(buildMessage());
+		if(!hasEveryoneFineshedRolling()) {
+			return;
 		}
+		
+		Set<Player> winningPlayers = getWinningPlayers();
+		if(winningPlayers.size() == 1) {
+			Player startingPlayer = winningPlayers.iterator().next();
+			GameEngine.startGame(startingPlayer);
+		} else {
+		startNewTurn(winningPlayers);
+		}
+	}
+
+	private static void startNewTurn(Set<Player> winningPlayers) {
+		playersRoll.clear();
+		eligiblePlayers = winningPlayers;
+		if(eligiblePlayers.contains(LocalPlayer.getColor())) {			
+			startTurn();
+		}
+	}
+
+	private static Set<Player> getWinningPlayers() {
+		Integer maxRoll = 0;
+		Set<Player> winningPlayers = new HashSet<Player>();
+		for(Map.Entry<Player, Integer> entry : playersRoll.entrySet()) {
+			if(entry.getValue() == maxRoll) {
+				winningPlayers.add(entry.getKey());
+			}
+			if(entry.getValue() > maxRoll) {
+				maxRoll = entry.getValue();
+				winningPlayers.clear();
+				winningPlayers.add(entry.getKey());
+			}
+		}
+		return winningPlayers;
 	}
 
 	private static boolean hasEveryoneFineshedRolling() {

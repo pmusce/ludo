@@ -1,7 +1,5 @@
 package commands;
 
-import ludo.FirstPlayerElection;
-import ludo.GameEngine;
 import ludo.GameRoom;
 import ludo.HumanPlayer;
 
@@ -19,7 +17,6 @@ public class ReadyCommand extends Command {
 		if(GameRoom.areAllPlayersReady()) {
 			CommandDeliverer.startGame();
 		}
-		
 	}
 
 }

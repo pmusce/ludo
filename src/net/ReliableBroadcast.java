@@ -16,17 +16,16 @@ public class ReliableBroadcast extends Broadcast {
 	}
 	
 	public void broadcast(Message message) {
-		sendAll(GameRoom.getOthers().values(), message);
 		delivered.add(message);
 		messageHandler.deliver(message);
+		sendAll(GameRoom.getOthers().values(), message);
 		
 	}
 
-	public void receive(Message message) {
+	public synchronized void receive(Message message) {
 		if(!delivered.contains(message)) {
 			delivered.add(message);
 			messageHandler.deliver(message);
-			
 			Collection<HumanPlayer> receivers = GameRoom.getOthers().values();
 			receivers.remove(message.getSender());
 			sendAll(receivers, message);			
