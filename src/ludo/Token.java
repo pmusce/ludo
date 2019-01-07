@@ -52,4 +52,8 @@ public class Token extends Square {
 		}
 		return null;
 	}
+	
+	public Player getPlayer() {
+		return player;
+	}
 }

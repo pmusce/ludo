@@ -67,7 +67,15 @@ public class Board {
 	}
 	
 	private void putTokenInSquare(Square[] s, int position, Token t) {
+		if(!s[position].isEmpty()) {
+			Token oldToken = (Token)s[position];
+			Player p = oldToken.getPlayer();
+			int oldValue =starting.get(p);
+			starting.put(p, oldValue + 1 );
+		}
+		
 		s[position] = t;
+		
 	}
 
 	public void putIn(Player player) {
@@ -85,9 +93,10 @@ public class Board {
 		if (isGoingToHomeColumn(player, tokenPosition, steps)) {
 			Square[] playerHome = homes.get(player);
 			newPosition = newPosition - player.getStartingSquare();
-			playerHome[newPosition] = token;
+			putTokenInSquare(playerHome, newPosition, token);
+			
 		} else {
-			regular[newPosition] = token;
+			putTokenInSquare(regular, newPosition, token);
 		}
 
 		return newPosition;
@@ -110,7 +119,7 @@ public class Board {
 			finishing.put(player, finishLine + 1);
 		} else {
 			Token token = (Token) playerHome[tokenPosition];
-			playerHome[tokenPosition + steps] = token;
+			putTokenInSquare(playerHome, tokenPosition + steps, token);
 		}
 
 		playerHome[tokenPosition] = new EmptySquare();
