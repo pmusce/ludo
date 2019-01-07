@@ -3,7 +3,11 @@ package ludo;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
+
+import gui.GUI;
+import gui.GUIBoard;
 
 public class GameRoom {
 	private static EnumMap<Player, HumanPlayer> instance = null;
@@ -23,19 +27,22 @@ public class GameRoom {
 		instance = players;
 	}
 	
-	public static EnumMap<Player, HumanPlayer> getOthers() {
+	public static EnumMap<Player, HumanPlayer> getConnectedPlayers() {
 		EnumMap<Player, HumanPlayer> otherPlayers = new EnumMap<Player, HumanPlayer>(instance.clone());
+		for(Entry<Player, HumanPlayer> p : otherPlayers.entrySet()) {
+			if(!p.getValue().isConnected()) {
+				otherPlayers.remove(p.getKey());
+			}
+		}
+		return otherPlayers;
+	}
+	
+	public static EnumMap<Player, HumanPlayer> getOtherConnectedPlayers() {
+		EnumMap<Player, HumanPlayer> otherPlayers = getConnectedPlayers();
 		otherPlayers.remove(LocalPlayer.getColor());
 		return otherPlayers;
 	}
 	
-	public static Set<String> getPlayers() {
-		Set<String> result = new HashSet<String>();
-		for(HumanPlayer p : instance.values()) {
-			result.add(p.getNickname());
-		}
-		return result;
-	}
 
 	public static void addPlayer(HumanPlayer player) {
 		Player color = selectColor();
@@ -54,26 +61,10 @@ public class GameRoom {
 	
 	public static Player getNext(Player current) {
 		Player result = current.next();
-		while(!instance.containsKey(result)) {
+		while(!instance.containsKey(result) || !instance.get(result).isConnected()) {
 			result = result.next();
 		}
 		return result;
-	}
-
-	public static Set<LudoInterface> getConnections() {
-		Set<LudoInterface> connections = new HashSet<LudoInterface>();
-		for(HumanPlayer p : getInstance().values()) {
-			connections.add(p.getConnection());
-		}
-		return connections;
-	}
-	
-	public static Set<LudoInterface> getOthersConnections() {
-		Set<LudoInterface> connections = new HashSet<LudoInterface>();
-		for(HumanPlayer p : getOthers().values()) {
-			connections.add(p.getConnection());
-		}
-		return connections;
 	}
 	
 	public static void togglePlayerReady(HumanPlayer player) {
@@ -98,6 +89,15 @@ public class GameRoom {
 		for(HumanPlayer player : getInstance().values()) {
 //			System.out.println(player.getNickname() + " - " + player.isReady());
 		}
+	}
+	
+	public static void disconnectPlayer(HumanPlayer player) {
+		for(HumanPlayer p : getInstance().values()) {
+			if(p.equals(player)) {
+				p.setConnected(false);
+			}
+		}
+		GUI.updateBoard();
 	}
 
 }

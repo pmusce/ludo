@@ -10,4 +10,5 @@ public interface LudoInterface extends Remote{
 	void connect(HumanPlayer localPlayer) throws RemoteException;
 	void update(EnumMap<Player, HumanPlayer> registries) throws RemoteException;
 	void sendMessage(Message message) throws RemoteException;
+	void ping() throws RemoteException;
 }

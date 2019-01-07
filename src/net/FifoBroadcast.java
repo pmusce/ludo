@@ -16,7 +16,7 @@ public class FifoBroadcast extends ReliableBroadcast implements MessageHandler {
 		super();
 		buffer = new HashSet<Message>();
 		next = new HashMap<HumanPlayer, Integer>();
-		for (HumanPlayer p : GameRoom.getInstance().values()) {
+		for (HumanPlayer p : GameRoom.getConnectedPlayers().values()) {
 			next.put(p, 0);
 		}
 	}

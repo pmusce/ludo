@@ -49,4 +49,11 @@ public class Ludo implements LudoInterface {
 		BroadcastReceiver.enqueueMessage(message);
 	}
 
+	@Override
+	public void ping() throws RemoteException {
+		// If this returns without throwing an exception, 
+		// it means that the connection is still alive
+	}
+
+	
 }

@@ -3,6 +3,7 @@ package net;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
+import ludo.GameRoom;
 import ludo.HumanPlayer;
 
 public abstract class Broadcast implements BroadcastInterface {
@@ -12,8 +13,7 @@ public abstract class Broadcast implements BroadcastInterface {
 			try {
 				p.getConnection().sendMessage(message);
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				GameRoom.disconnectPlayer(p);
 			}
 		}
 	}

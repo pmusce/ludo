@@ -96,6 +96,10 @@ public class GUI {
 //		System.out.println("----");
 //	}
 
+	public static void updateBoard() {
+		gBoard.update();
+	}
+	
 	public static GUIBoard createBoardFrame(Board board) {
 		gBoard = new GUIBoard(board);
 		actionsPanel = new ActionsPanel();

@@ -1,8 +1,11 @@
 package ludo;
 
+import java.util.Timer;
+
 import commands.CommandDeliverer;
 import gui.GUI;
 import gui.GUIBoard;
+import net.PingTask;
 
 public class GameEngine{
 	private static boolean gameStarted = false;
@@ -31,6 +34,9 @@ public class GameEngine{
 			System.out.println("Wait your turn");
 			GUI.showWaiting();
 		}
+		
+		Timer t = new Timer();
+		t.scheduleAtFixedRate(new PingTask(), 3000, 3000);
 	}
 
 	public static void play() {

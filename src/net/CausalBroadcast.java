@@ -20,7 +20,7 @@ public class CausalBroadcast extends FifoBroadcast implements MessageHandler {
 		super();
 		buffer = new HashSet<CausalMessage>();
 		VC = new HashMap<HumanPlayer, Integer>();
-		for (HumanPlayer p : GameRoom.getInstance().values()) {
+		for (HumanPlayer p : GameRoom.getConnectedPlayers().values()) {
 			VC.put(p, 0);
 		}
 	}
@@ -82,7 +82,7 @@ public class CausalBroadcast extends FifoBroadcast implements MessageHandler {
 	}
 
 	private boolean isCausalConsistent(CausalMessage msg, HumanPlayer sender) {
-		for(HumanPlayer s : GameRoom.getInstance().values()) {
+		for(HumanPlayer s : GameRoom.getConnectedPlayers().values()) {
 			if(s.equals(sender)) 
 				continue;
 			if(VC.get(s) < msg.getTS().get(s))

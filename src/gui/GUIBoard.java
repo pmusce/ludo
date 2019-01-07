@@ -139,6 +139,9 @@ public class GUIBoard extends JPanel {
 			if(color.equals(GameEngine.getActivePlayer())) {
 				nickname = nickname + " (playing)";
 			}
+			if(!player.getValue().isConnected()) {
+				nickname = nickname + " (disconnected)";
+			}
 			g2.drawString(nickname, x * squareSize + offset, y * squareSize + fm.getHeight() + offset);
 			int availableTokens = board.getStarting().get(color);
 			g2.drawString("Available tokens: " + availableTokens, x * squareSize + offset, (y + 1) * squareSize + fm.getHeight() + offset);

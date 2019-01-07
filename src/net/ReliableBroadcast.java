@@ -18,7 +18,7 @@ public class ReliableBroadcast extends Broadcast {
 	public void broadcast(Message message) {
 		delivered.add(message);
 		messageHandler.deliver(message);
-		sendAll(GameRoom.getOthers().values(), message);
+		sendAll(GameRoom.getOtherConnectedPlayers().values(), message);
 		
 	}
 
@@ -26,7 +26,7 @@ public class ReliableBroadcast extends Broadcast {
 		if(!delivered.contains(message)) {
 			delivered.add(message);
 			messageHandler.deliver(message);
-			Collection<HumanPlayer> receivers = GameRoom.getOthers().values();
+			Collection<HumanPlayer> receivers = GameRoom.getOtherConnectedPlayers().values();
 			receivers.remove(message.getSender());
 			sendAll(receivers, message);			
 		}	

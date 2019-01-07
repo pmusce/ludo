@@ -16,7 +16,7 @@ public class SimpleBroadcast extends Broadcast {
 	}
 
 	public void broadcast(Message message) {
-		sendAll(GameRoom.getInstance().values(), message);
+		sendAll(GameRoom.getConnectedPlayers().values(), message);
 	}
 
 	public void receive(Message message) {

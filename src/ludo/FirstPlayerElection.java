@@ -15,7 +15,7 @@ public class FirstPlayerElection {
 	public static void begin() {
 		System.out.println("Starting election for first player");
 		eligible = true;
-		eligiblePlayers = GameRoom.getInstance().keySet();
+		eligiblePlayers = GameRoom.getConnectedPlayers().keySet();
 		if(playersRoll == null) {			
 			playersRoll = new HashMap<Player, Integer>();
 		}
@@ -81,7 +81,7 @@ public class FirstPlayerElection {
 	private static String buildMessage() {
 		String msg = "First player election:\n";
 		for(Player player : eligiblePlayers) {
-			String nickname = GameRoom.getInstance().get(player).getNickname();
+			String nickname = GameRoom.getConnectedPlayers().get(player).getNickname();
 			String playerColor = player.toString();
 			Integer rollValue = playersRoll.get(player);
 			String rollTxt = rollValue == null ? "-" : rollValue.toString();

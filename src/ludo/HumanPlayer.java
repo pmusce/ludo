@@ -7,6 +7,7 @@ public class HumanPlayer implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String nickname;
 	private boolean isReady;
+	private boolean isConnected = true;
 	private LudoInterface connection;
 	
 	public String getNickname() {
@@ -18,11 +19,14 @@ public class HumanPlayer implements Serializable{
 	public boolean isReady() {
 		return isReady;
 	}
-	public void setReady(boolean isReady) {
-		this.isReady = isReady;
-	}
 	public void toggleReady() {
 		isReady = !isReady;
+	}
+	public boolean isConnected() {
+		return this.isConnected;
+	}
+	public void setConnected(boolean connected) {
+		this.isConnected = connected;
 	}
 	
 	@Override
