@@ -15,56 +15,44 @@ public class Board {
 	private EnumMap<Player, Integer> starting;
 	// Finishing Squares (Numbers of tokens that reached the finish square)
 	private EnumMap<Player, Integer> finishing;
-	
+
 	public Board() {
 		regular = new Square[13 * playersNumber];
 		Arrays.fill(regular, new EmptySquare());
-		
-		homes = new EnumMap<Player, Square[]>(Player.class);		
+
+		homes = new EnumMap<Player, Square[]>(Player.class);
 		starting = new EnumMap<Player, Integer>(Player.class);
 		finishing = new EnumMap<Player, Integer>(Player.class);
-		
-		for(Player p : Player.values()) {
+
+		for (Player p : Player.values()) {
 			starting.put(p, 4);
 			finishing.put(p, 0);
 			homes.put(p, createEmptySquares(5));
 		}
 	}
-	
-	private Square[] createEmptySquares(Integer length) {
-		Square[] result = new Square[length];
-		Arrays.fill(result, new EmptySquare());
-		return result;
-	}
-	
-	public void putIn(Player player) {
-		Integer availableTokens = starting.get(player);
-		starting.put(player, availableTokens - 1);
-		regular[player.getStartingSquare()] = new Token(player);
-	}
-	
+
 	public String toString() {
 		String s = "";
 		s += printEnumMap(starting) + "\n";
-		
-		for(Square square : regular) 
+
+		for (Square square : regular)
 			s += square.toString();
 		s += "\n";
-		
-		for(Square[] h : homes.values())
-			for(Square square : h) 
+
+		for (Square[] h : homes.values())
+			for (Square square : h)
 				s += square.toString();
 		s += "\n";
-		
+
 		s += printEnumMap(finishing);
-		
+
 		return s;
 	}
-	
+
 	private String printEnumMap(EnumMap<Player, Integer> map) {
 		StringBuilder sb = new StringBuilder(256);
-		
-		for(Integer n : map.values()) {
+
+		for (Integer n : map.values()) {
 			sb.append(n.toString());
 			sb.append("-");
 		}
@@ -72,21 +60,36 @@ public class Board {
 		return sb.toString();
 	}
 
+	private Square[] createEmptySquares(Integer length) {
+		Square[] result = new Square[length];
+		Arrays.fill(result, new EmptySquare());
+		return result;
+	}
+	
+	private void putTokenInSquare(Square[] s, int position, Token t) {
+		s[position] = t;
+	}
+
+	public void putIn(Player player) {
+		Integer availableTokens = starting.get(player);
+		starting.put(player, availableTokens - 1);
+		putTokenInSquare(regular, player.getStartingSquare(), new Token(player));
+	}
+
 
 	public int move(Player player, int tokenPosition, int steps) {
 		Token token = (Token) regular[tokenPosition];
 		regular[tokenPosition] = new EmptySquare();
-		
-		
-		int newPosition = (tokenPosition + steps) % regular.length ;
-		if(isGoingToHomeColumn(player, tokenPosition, steps)) {
+
+		int newPosition = (tokenPosition + steps) % regular.length;
+		if (isGoingToHomeColumn(player, tokenPosition, steps)) {
 			Square[] playerHome = homes.get(player);
 			newPosition = newPosition - player.getStartingSquare();
 			playerHome[newPosition] = token;
-		} else {			
+		} else {
 			regular[newPosition] = token;
 		}
-		
+
 		return newPosition;
 	}
 
@@ -96,20 +99,20 @@ public class Board {
 	}
 
 	public void moveInsideHomeColumn(Player player, int tokenPosition, int steps) throws MoveNotAllowedException {
-		if(tokenPosition + steps >= 6) {
+		if (tokenPosition + steps >= 6) {
 			throw new MoveNotAllowedException();
 		}
-		
+
 		Square[] playerHome = homes.get(player);
 
-		if(tokenPosition + steps == 5) {
+		if (tokenPosition + steps == 5) {
 			Integer finishLine = finishing.get(player);
-			finishing.put(player, finishLine+1);
-		} else {			
+			finishing.put(player, finishLine + 1);
+		} else {
 			Token token = (Token) playerHome[tokenPosition];
 			playerHome[tokenPosition + steps] = token;
 		}
-		
+
 		playerHome[tokenPosition] = new EmptySquare();
 	}
 
@@ -118,14 +121,16 @@ public class Board {
 	}
 
 	public boolean hasPlayerAvailableMoves(Player p, int steps) {
-		for(Square s : regular) {
-			if(s.isTokenOfPlayer(p)) return true;
+		for (Square s : regular) {
+			if (s.isTokenOfPlayer(p))
+				return true;
 		}
 		Square[] playerHome = homes.get(p);
-		for(int i = 0; i < playerHome.length; i++) {
-			if(playerHome[i].isTokenOfPlayer(p)) {
-				if(i + steps < 6) return true;
-			}	
+		for (int i = 0; i < playerHome.length; i++) {
+			if (playerHome[i].isTokenOfPlayer(p)) {
+				if (i + steps < 6)
+					return true;
+			}
 		}
 		return false;
 	}
@@ -149,23 +154,23 @@ public class Board {
 	public EnumMap<Player, Integer> getFinishing() {
 		return finishing;
 	}
-	
+
 	public List<Integer> getMovableTokens(Player p, int steps) {
 		List<Integer> result = new ArrayList<Integer>();
-		for(int i=0; i<regular.length; i++) {
+		for (int i = 0; i < regular.length; i++) {
 			Square s = regular[i];
-			if(s.isTokenOfPlayer(p)) {
+			if (s.isTokenOfPlayer(p)) {
 				result.add(i);
 			}
 		}
 		Square[] playerHome = homes.get(p);
-		for(int i = 0; i < playerHome.length; i++) {
-			if(playerHome[i].isTokenOfPlayer(p)) {
-				if(i + steps < 6) 
+		for (int i = 0; i < playerHome.length; i++) {
+			if (playerHome[i].isTokenOfPlayer(p)) {
+				if (i + steps < 6)
 					result.add(i + 13 * playersNumber);
-			}	
+			}
 		}
-		
+
 		return result;
 	}
 }
