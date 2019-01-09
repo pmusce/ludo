@@ -117,6 +117,9 @@ public class Board {
 		if (tokenPosition + steps == 5) {
 			Integer finishLine = finishing.get(player);
 			finishing.put(player, finishLine + 1);
+			if(finishing.get(player) == 4) {
+				GameEngine.endGame(player);
+			}
 		} else {
 			Token token = (Token) playerHome[tokenPosition];
 			putTokenInSquare(playerHome, tokenPosition + steps, token);

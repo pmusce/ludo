@@ -125,4 +125,18 @@ public class GameEngine{
 		gBoard.update();
 	}
 
+	public static void endGame(Player winner) {
+		System.out.println("-------");
+		System.out.println("Game over");
+		if(LocalPlayer.getColor().equals(winner)) {
+			System.out.println("You win!");
+		} else {
+			System.out.println("You loose.");
+			System.out.println(winner.toString() + " wins!");
+		}
+		System.out.println("-------");
+		System.exit(0);
+		
+	}
+
 }

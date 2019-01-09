@@ -2,12 +2,9 @@ package ludo;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import gui.GUI;
-import gui.GUIBoard;
 
 public class GameRoom {
 	private static EnumMap<Player, HumanPlayer> instance = null;
@@ -87,16 +84,25 @@ public class GameRoom {
 	
 	public static void printPlayers() {
 		for(HumanPlayer player : getInstance().values()) {
-//			System.out.println(player.getNickname() + " - " + player.isReady());
+			String str = player.getNickname() + " - ";
+			str += player.isReady() ? "ready" : "wait";
+			System.out.println(str);
 		}
+		System.out.println();
 	}
 	
 	public static void disconnectPlayer(HumanPlayer player) {
+		System.out.println(player.getNickname() + " has disconnected");
 		for(HumanPlayer p : getInstance().values()) {
 			if(p.equals(player)) {
 				p.setConnected(false);
 			}
 		}
+		
+		if(getOtherConnectedPlayers().isEmpty()) {
+			GameEngine.endGame(LocalPlayer.getColor());
+		}
+		
 		GUI.updateBoard();
 	}
 
