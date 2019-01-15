@@ -109,6 +109,5 @@ public class ActionsPanel extends JPanel implements ActionListener {
 		default:
 			break;
 		}
-		
 	}
 }

@@ -1,0 +1,2 @@
+#!/bin/bash
+java -cp src:ludo.jar ludo.EntryPoint "$@"

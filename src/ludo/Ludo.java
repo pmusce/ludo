@@ -42,6 +42,7 @@ public class Ludo implements LudoInterface {
 	@Override
 	public void update(EnumMap<Player, HumanPlayer> registries) throws RemoteException {
 		GameRoom.updateAll(registries);
+		GameRoom.printPlayers();
 	}
 
 	@Override
