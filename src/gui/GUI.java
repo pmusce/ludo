@@ -34,7 +34,7 @@ public class GUI {
 
 	protected static void createAndShowGUI() {
 		//Create and set up the window.
-        waitingRoomFrame = new JFrame("Ludo - " + LocalPlayer.getColor().toString());
+        waitingRoomFrame = new JFrame("Ludo - " + LocalPlayer.getInstance().getNickname());
         waitingRoomFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         waitingRoomFrame.setMinimumSize(new Dimension(100,0));
         
@@ -74,27 +74,6 @@ public class GUI {
         waitingRoomFrame.pack();
         waitingRoomFrame.setVisible(true);
 	}
-
-//	private static void showConnectedUsers() {
-//		usersPanel.add(new JLabel("Prova"));
-//		for(Entry<Player, HumanPlayer> player :  GameRoom.getInstance().entrySet()) {
-//			String output;
-//			try {
-//				Player color = player.getKey();
-//				output = color.toString() + " " + player.getValue().getNickname() + ": ";
-//				output += player.getValue().getConnection().isReady() ? "" : "not ";
-//				output += "ready";
-//				
-//				System.out.println(output);
-//			} catch (RemoteException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//		}
-//		waitingRoomFrame.revalidate();
-//		System.out.println("----");
-//	}
 
 	public static void updateBoard() {
 		gBoard.update();

@@ -44,6 +44,7 @@ public class GameRoom {
 	public static void addPlayer(HumanPlayer player) {
 		Player color = selectColor();
 		instance.put(color, player);
+		printPlayers();
 	}
 
 	private static Player selectColor() {

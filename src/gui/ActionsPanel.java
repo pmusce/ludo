@@ -98,6 +98,7 @@ public class ActionsPanel extends JPanel implements ActionListener {
 			break;
 		case "move":
 			GUI.enableMovingToken();
+			buttonToken.setEnabled(false);
 			break;
 		case "play":
 			GameEngine.playToken();

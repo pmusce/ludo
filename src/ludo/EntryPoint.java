@@ -17,9 +17,16 @@ public class EntryPoint {
 										// otherwise collected by the gc
 	
 	public static void main(String[] args) {
-		int port = (args.length > 0) ? Integer.parseInt(args[0]) : 1099; 
-		String nickname = Integer.toString(port);
-		boolean isCreatingRoom = (args.length <= 1);
+		if(args.length < 1) {
+			System.out.println("Usage:");
+			System.out.println("ludo nickname [port] [remote_port] [remote_ip]");
+			System.exit(0);
+		}
+		
+		String nickname = args[0];
+		int port = (args.length > 1) ? Integer.parseInt(args[1]) : 1099; 
+		
+		boolean isCreatingRoom = (args.length <= 2);
 		
 		HumanPlayer localPlayer = LocalPlayer.getInstance();
 		localPlayer.setNickname(nickname);
@@ -37,16 +44,18 @@ public class EntryPoint {
 		GUI.start();
 		
 		if(!isCreatingRoom) {
-			int remotePort = Integer.parseInt(args[1]);
-			connectToRemotePlayer(nickname, remotePort);
+			int remotePort = Integer.parseInt(args[2]);
+			String remoteHost = (args.length > 3) ? args[4] : null; 
+			
+			connectToRemotePlayer(nickname, remoteHost, remotePort);
 		}
 		
 		
 	}
 	
-	private static void connectToRemotePlayer(String nickname, int remotePort) {
+	private static void connectToRemotePlayer(String nickname, String remoteHost, int remotePort) {
 		try {
-			Registry remoteRegistry = LocateRegistry.getRegistry(remotePort);
+			Registry remoteRegistry = LocateRegistry.getRegistry(remoteHost, remotePort);
 			LudoInterface remoteClient = (LudoInterface) remoteRegistry.lookup("ludo");
 			HumanPlayer localPlayer = LocalPlayer.getInstance();
 			localPlayer.setConnection(gameIstance);
