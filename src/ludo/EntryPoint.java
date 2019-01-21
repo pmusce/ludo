@@ -62,6 +62,7 @@ public class EntryPoint {
 			remoteClient.connect(localPlayer);
 		} catch(RemoteException | NotBoundException e) {
 			e.printStackTrace();
+			System.exit(0);
 		}
 	}
 
@@ -77,6 +78,7 @@ public class EntryPoint {
 			localRegistry.rebind("ludo", stub);
 		} catch (RemoteException e) {
 			e.printStackTrace();
+			System.exit(0);
 		}
 	}
 	

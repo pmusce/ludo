@@ -34,8 +34,9 @@ public class Ludo implements LudoInterface {
 		try {
 			remoteRegistry.update(GameRoom.getInstance());
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
+			// In the case of failure before starting the game, the execution ends
 			e.printStackTrace();
+			System.exit(0);
 		}
 	}
 

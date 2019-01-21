@@ -21,8 +21,8 @@ public class CommandDeliverer implements Runnable {
 		try {
 			queue.put(msg);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(0);
 		}
 	}
 

@@ -2,6 +2,7 @@ package net;
 
 import ludo.GameRoom;
 
+// Not used in current implementation
 public class SimpleBroadcast extends Broadcast {
 	private static SimpleBroadcast instance = null;
 
@@ -29,7 +30,6 @@ public class SimpleBroadcast extends Broadcast {
 
 	@Override
 	public void setMessageHandler(MessageHandler messageHandler) {
-		// TODO Auto-generated method stub
 		
 	}
 
