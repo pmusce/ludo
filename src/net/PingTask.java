@@ -18,8 +18,6 @@ public class PingTask extends TimerTask {
 			GameRoom.disconnectPlayer(activePlayer);
 			GameEngine.giveTurnToPlayer(GameRoom.getNext(GameEngine.getActivePlayer()));
 		}
-		
-
 	}
 
 }
