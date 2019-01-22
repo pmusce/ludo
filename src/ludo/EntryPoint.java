@@ -45,7 +45,7 @@ public class EntryPoint {
 		
 		if(!isCreatingRoom) {
 			int remotePort = Integer.parseInt(args[2]);
-			String remoteHost = (args.length > 3) ? args[4] : null; 
+			String remoteHost = (args.length > 3) ? args[3] : null; 
 			
 			connectToRemotePlayer(nickname, remoteHost, remotePort);
 		}
